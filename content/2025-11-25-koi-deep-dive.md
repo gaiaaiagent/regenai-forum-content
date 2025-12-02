@@ -1,7 +1,6 @@
 # The Knowledge Brain of Regeneration
 
-![How KOI Nodes Work](/images/block-science-koi/koi1.png)
-*How KOI nodes work: event communication (listen/broadcast) and state communication (call/respond). Image created by Luke Miller for BlockScience.*
+![How KOI Nodes Work](../images/forest_cross_section.png)
 
 # [Week 2/12] Regen AI Update: KOI MCP Deep Dive - November 25, 2025
 
@@ -15,9 +14,11 @@
 *"Today's information environment is defined by a strange inversion: Instead of inhabiting a shared reality from which a variety of knowledge objects emerge, we inhabit a variety of realities that each emerge from a particular collection of knowledge objects their inhabitants hold in common."*
 — BlockScience, A Preview of the KOI-net Protocol
 
-Last week, we introduced Regen AI's three foundational MCP servers. This week, we descend into the mycelium—the vast underground network that connects everything in the forest of regenerative knowledge. Welcome to the KOI MCP: the knowledge brain that transforms scattered documents into planetary intelligence.
+Last week, we introduced Regen AI's three foundational MCP servers. This week, we descend into the mycelium—the vast underground network that connects everything in the forest of regenerative knowledge. Welcome to the Regen KOI MCP: the knowledge brain that transforms scattered documents into planetary intelligence. 
 
-But first, a confession: the problem we're solving isn't a technology problem. It's an ecology problem.
+KOI is more than a database. It's a living nervous system for regenerative knowledge. When we talk about creating a "legibility layer" for ecological data, we're describing something profound: the ability for any intelligent agent to ask questions of the regenerative economy and receive coherent, contextualized answers. *What methodologies have proven most effective for soil carbon sequestration in tropical regions? How has the Regen community's thinking evolved on biodiversity credits? What patterns emerge when we trace the connections between projects, people, and protocols?*
+
+These questions require more than search. They require understanding.
 
 ---
 
@@ -46,7 +47,102 @@ This is where KOI enters—not as a database, but as a *nervous system*.
 
 KOI stands for **Knowledge Organization Infrastructure**. It emerged from research by BlockScience in partnership with Metagov and RMIT, designed to help "distinct actors construct a shared reality from which they can collaborate."
 
-The fundamental insight is profound: **knowledge coordination precedes action coordination**. Before we can act together on planetary-scale challenges, we must first establish common understanding—not by forcing agreement, but by making our respective knowledge legible to one another.
+The fundamental insight is profound: **knowledge coordination precedes action coordination**. Before we can act together on planetary-scale challenges, we must first establish common understanding—not by forcing agreement, but by making our respective knowledge legible to one another. At its heart, KOI embodies a radical proposition: **knowledge itself should be decentralized, versioned, and self-organizing** - just like the ecological systems we seek to regenerate.
+
+The KOI protocol draws inspiration from how mycorrhizal networks share resources between trees. In a forest, information about nutrients, water stress, and threats flows through fungal highways connecting root systems. No central controller directs this flow - it emerges from the network topology itself. KOI works similarly. Rather than a monolithic database controlled by a single entity, KOI creates a **federation of knowledge nodes** that discover each other, negotiate relationships, and broadcast updates through event propagation. When new knowledge enters the system - a forum post, a methodology update, a governance proposal - it ripples outward through the network, transformed and enriched at each step.
+
+This is infrastructure for the Symbiocene: technology that mirrors natural patterns of distributed intelligence.
+
+## How KOI Actually Works: A Technical Journey
+
+Let's trace how knowledge flows from source to insight. Understanding this architecture illuminates why KOI enables capabilities impossible with traditional search.
+
+### The Node Architecture
+
+Every participant in the KOI network is a **node**. The `NodeInterface` class serves as the embodiment of each node, wiring together multiple interconnected subsystems:
+
+```
+NodeInterface
+├── identity      (who am I in the network?)
+├── cache         (what do I remember locally?)
+├── effector      (how do I resolve references?)
+├── graph         (who do I know, and how?)
+├── pipeline      (how do I process knowledge?)
+├── processor     (how do I handle specific events?)
+└── network_interface (how do I communicate?)
+```
+
+Nodes come in two types:
+
+**Full Nodes** operate as web servers, receiving knowledge through webhooks. They maintain persistent connections and can broadcast to many subscribers simultaneously. Think of these as the major hub cities in a transportation network.
+
+**Partial Nodes** operate as web clients, polling for updates. They're lighter weight and can run anywhere - in a browser, a mobile app, or an AI agent's runtime. These are the local stations that keep smaller communities connected.
+
+This hybrid architecture means KOI can scale from a single laptop running a sensor to a global network processing millions of knowledge updates daily.
+
+### The Language of Knowledge: RIDs and Bundles
+
+Every piece of knowledge in KOI receives a **Resource Identifier (RID)** - a unique, permanent address in the global knowledge space. RIDs use the ORN (Object Resource Name) format:
+
+```
+orn:web.page:docs.regen.network/1ef62e1ed208c19c
+orn:discourse.post:forum.regen.network/12345
+orn:methodology:regen.network/C01-methodology-v3
+```
+
+These aren't just identifiers - they're *commitments*. When you reference an RID, you're pointing to a specific piece of knowledge that can be resolved anywhere in the network through the **effector system**. The effector tries three strategies in sequence:
+
+1. **Cache** - Do I already have this locally?
+2. **Action** - Can I generate or fetch it myself?
+3. **Network** - Ask neighbors who might know
+
+This pattern of local-first with network fallback mirrors how biological systems conserve energy while maintaining resilience.
+
+Knowledge travels in **Bundles** - containers with two parts:
+- **Manifest**: Metadata describing the content (hash, timestamp, source, type)
+- **Contents**: The actual knowledge payload
+
+The manifest's cryptographic hash ensures integrity: you can verify that knowledge hasn't been tampered with as it flows through the network.
+
+### The FUN Events: How Knowledge Propagates
+
+KOI uses three event types (forming the mnemonic **FUN**):
+
+* **FORGET** - This knowledge is no longer valid; remove it from your understanding
+* **UPDATE** - This knowledge has changed; here's the new version
+* **NEW** - This knowledge didn't exist before; add it to your understanding
+
+When a sensor detects that docs.regen.network has changed, it emits an UPDATE event. This event flows through the **knowledge pipeline** - a five-phase processing system:
+
+```
+RID Phase → Manifest Phase → Bundle Phase → Network Phase → Final Phase
+```
+
+At each phase, **handlers** can inspect, transform, enrich, or block the knowledge object. For example:
+
+* The **RID handler** blocks events about yourself (prevents infinite loops)
+* The **Manifest handler** compares timestamps and hashes to detect actual changes
+* The **Edge negotiation handler** manages relationships between nodes
+* The **Network output handler** routes updates to interested subscribers
+
+This pipeline architecture means nodes can customize their knowledge processing without breaking protocol compatibility. A methodology-focused node might add handlers that extract entity relationships, while a governance-focused node might prioritize proposal content.
+
+### The NetworkGraph: Knowledge Topology
+
+Each node maintains a **NetworkGraph** using directed graph structures. This graph answers questions like:
+
+* Which nodes subscribe to my updates?
+* Which nodes should I poll for knowledge?
+* What's the shortest path to reach a particular knowledge source?
+
+The graph isn't static - it evolves through **edge negotiation**. When two nodes want to establish a relationship, they exchange proposals specifying:
+
+* **Edge type**: Provider (I'll send you knowledge) or Subscriber (I want your knowledge)
+* **RID filter**: What kinds of knowledge flow through this edge?
+* **Capabilities**: What can each node offer?
+
+This negotiation happens automatically through the pipeline's edge handlers. The result is a self-organizing topology where knowledge flows efficiently to where it's needed.
+
 
 ### The RID Protocol: Every Piece of Knowledge Has a Name
 
@@ -73,8 +169,7 @@ These aren't database operations—they're *signals*. When a new forum post appe
 This event-driven architecture means KOI networks are **living systems**. They respond to changes in real-time. They're decentralized by design—no central authority decides what's important. Each node maintains autonomy while contributing to collective intelligence.
 
 ### Nodes, Sensors, Processors: The Anatomy of a KOI Network
-
-![KOI Network Node Types](/images/block-science-koi/koi2.png)
+![KOI Network Node Types](../images/block-science-koi/koi2.png)
 *Different types of nodes in a KOI-net, categorized by their relationship to the boundary between the network and the external world. Image created by Luke Miller for BlockScience.*
 
 The KOI-net protocol defines several node types, categorized by their relationship to organizational boundaries:
@@ -106,10 +201,10 @@ The beauty of this architecture is its **fractal nature**: a network of nodes ca
 
 ## The Regen KOI Network: A Living Map
 
-![Demo KOI-net Architecture](/images/block-science-koi/koi3.png)
-*The architecture of a KOI-net demonstration showing the relationship between sensors, coordinator, and processors. Image created by Sayer Tindall for BlockScience.*
+![Regen KOI Network](../images/regen-koi-network.png)
+*The architecture of a RegenAI's KOI Network.*
 
-The diagram above reveals the foundational architecture that powers networks like Regen AI's KOI implementation. Let's walk through it:
+The diagram above reveals the foundational architecture that powers Regen AI's KOI implementation. Let's walk through it:
 
 ### The Sensory Array (Blue Nodes)
 
@@ -188,8 +283,7 @@ Total time from post to searchable, graph-connected, citable knowledge: **under 
 ---
 
 ## The Birth of Automated Regenerative Media
-
-![Data Flow Through KOI-net](/images/block-science-koi/koi4.png)
+![Data Flow Through KOI-net](../images/regen_digest_podcast.png)
 *The seven-stage data flow through a KOI-net: from collection through processing to user access. Image created by Sayer Tindall for BlockScience.*
 
 Perhaps the most remarkable demonstration of KOI in action is the automated weekly podcast. Visit [digest.gaiaai.xyz](https://digest.gaiaai.xyz/) to experience the first AI-generated Regen Network podcast—a synthesis of each week's activity across the entire ecosystem.
