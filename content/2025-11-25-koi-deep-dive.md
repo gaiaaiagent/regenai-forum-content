@@ -14,7 +14,9 @@
 *"Today's information environment is defined by a strange inversion: Instead of inhabiting a shared reality from which a variety of knowledge objects emerge, we inhabit a variety of realities that each emerge from a particular collection of knowledge objects their inhabitants hold in common."*
 — BlockScience, A Preview of the KOI-net Protocol
 
-Last week, we introduced Regen AI's three foundational MCP servers. This week, we descend into the mycelium—the vast underground network that connects everything in the forest of regenerative knowledge. Welcome to the Regen KOI MCP: the knowledge brain that transforms scattered documents into planetary intelligence. 
+Last week, we introduced Regen AI's three foundational MCP servers. This week, we descend into the mycelium—the vast underground network that connects everything in the forest of regenerative knowledge. Welcome to the Regen KOI MCP: the knowledge brain that transforms scattered documents into planetary intelligence.
+
+**KOI—Knowledge Organization Infrastructure—was created by BlockScience**, the complex systems engineering and R&D firm, in partnership with Metagov and RMIT. Their research represents a fundamental breakthrough in how distributed organizations can establish shared knowledge while preserving autonomy. We're honored to be among the first to implement their protocol at scale, building what may be the most comprehensive knowledge infrastructure in the regenerative economy. What BlockScience designed as a theoretical framework, we've transformed into a living nervous system for planetary intelligence. 
 
 KOI is more than a database. It's a living nervous system for regenerative knowledge. When we talk about creating a "legibility layer" for ecological data, we're describing something profound: the ability for any intelligent agent to ask questions of the regenerative economy and receive coherent, contextualized answers. *What methodologies have proven most effective for soil carbon sequestration in tropical regions? How has the Regen community's thinking evolved on biodiversity credits? What patterns emerge when we trace the connections between projects, people, and protocols?*
 
@@ -55,42 +57,24 @@ This is infrastructure for the Symbiocene: technology that mirrors natural patte
 
 ## How KOI Actually Works: A Technical Journey
 
-Let's trace how knowledge flows from source to insight. Understanding this architecture illuminates why KOI enables capabilities impossible with traditional search.
+Understanding KOI requires tracing the path of knowledge from its source to its use. Unlike traditional databases that store static records, KOI treats knowledge as a living flow—continuously updated, cryptographically verified, and semantically connected. The protocol operates through four interlocking systems: **identifiers** that name knowledge unambiguously, **bundles** that package it for transport, **events** that signal changes, and **pipelines** that process it intelligently.
 
-### The Node Architecture
+What follows is a technical journey through each layer, from the atomic unit of a Resource Identifier to the emergent topology of a knowledge network. For developers, this is a blueprint. For everyone else, it's a window into the machinery that makes planetary intelligence possible.
 
-Every participant in the KOI network is a **node**. The `NodeInterface` class serves as the embodiment of each node, wiring together multiple interconnected subsystems:
+![KOI Network Node Types](../images/koi-node.png)
+*A KOI node's internal architecture: identity, cache, effector, graph, pipeline, processor, and network interface working together to process and route knowledge through the network.*
 
-```
-NodeInterface
-├── identity      (who am I in the network?)
-├── cache         (what do I remember locally?)
-├── effector      (how do I resolve references?)
-├── graph         (who do I know, and how?)
-├── pipeline      (how do I process knowledge?)
-├── processor     (how do I handle specific events?)
-└── network_interface (how do I communicate?)
-```
+### The RID Protocol: Every Piece of Knowledge Has a Name
 
-Nodes come in two types:
-
-**Full Nodes** operate as web servers, receiving knowledge through webhooks. They maintain persistent connections and can broadcast to many subscribers simultaneously. Think of these as the major hub cities in a transportation network.
-
-**Partial Nodes** operate as web clients, polling for updates. They're lighter weight and can run anywhere - in a browser, a mobile app, or an AI agent's runtime. These are the local stations that keep smaller communities connected.
-
-This hybrid architecture means KOI can scale from a single laptop running a sensor to a global network processing millions of knowledge updates daily.
-
-### The Language of Knowledge: RIDs and Bundles
-
-Every piece of knowledge in KOI receives a **Resource Identifier (RID)** - a unique, permanent address in the global knowledge space. RIDs use the ORN (Object Resource Name) format:
+At KOI's foundation lies the **Resource Identifier (RID) protocol**. Every document, every post, every piece of knowledge receives a unique identifier—not a random UUID, but a meaningful reference that captures *how* we refer to the content. RID's are unique, permanent addresses in the global knowledge space. RIDs use the ORN (Object Resource Name) format
 
 ```
-orn:web.page:docs.regen.network/1ef62e1ed208c19c
-orn:discourse.post:forum.regen.network/12345
-orn:methodology:regen.network/C01-methodology-v3
+orn:discourse.forum.regen.network:topic/12345
+orn:github.com:regen-network/regen-ledger/blob/main/README.md
+orn:web.page:registry.regen.network/carbon-credits
 ```
 
-These aren't just identifiers - they're *commitments*. When you reference an RID, you're pointing to a specific piece of knowledge that can be resolved anywhere in the network through the **effector system**. The effector tries three strategies in sequence:
+These RIDs create a shared vocabulary. When an AI agent references a piece of knowledge, any other agent (or human) can locate exactly the same source, no ambiguity, no hallucination. just verifiable citation. These aren't just identifiers - they're *commitments*. When you reference an RID, you're pointing to a specific piece of knowledge that can be resolved anywhere in the network through the **effector system**. The effector tries three strategies in sequence:
 
 1. **Cache** - Do I already have this locally?
 2. **Action** - Can I generate or fetch it myself?
@@ -104,13 +88,17 @@ Knowledge travels in **Bundles** - containers with two parts:
 
 The manifest's cryptographic hash ensures integrity: you can verify that knowledge hasn't been tampered with as it flows through the network.
 
-### The FUN Events: How Knowledge Propagates
+### The FUN Event System: Knowledge That Breathes
 
-KOI uses three event types (forming the mnemonic **FUN**):
+KOI networks communicate through events, forming the "FUN" triad:
 
 * **FORGET** - This knowledge is no longer valid; remove it from your understanding
 * **UPDATE** - This knowledge has changed; here's the new version
 * **NEW** - This knowledge didn't exist before; add it to your understanding
+
+These aren't database operations—they're *signals*. When a new forum post appears, the Discourse sensor emits a NEW event. Other nodes in the network decide independently how to respond. One might index it for search. Another might extract entities for a knowledge graph. A third might ignore it entirely if it's outside its domain of interest.
+
+This event-driven architecture means KOI networks are **living systems**. They respond to changes in real-time. They're decentralized by design—no central authority decides what's important. Each node maintains autonomy while contributing to collective intelligence.
 
 When a sensor detects that docs.regen.network has changed, it emits an UPDATE event. This event flows through the **knowledge pipeline** - a five-phase processing system:
 
@@ -143,32 +131,31 @@ The graph isn't static - it evolves through **edge negotiation**. When two nodes
 
 This negotiation happens automatically through the pipeline's edge handlers. The result is a self-organizing topology where knowledge flows efficiently to where it's needed.
 
+### The Node Architecture
 
-### The RID Protocol: Every Piece of Knowledge Has a Name
-
-At KOI's foundation lies the **Resource Identifier (RID) protocol**. Every document, every post, every piece of knowledge receives a unique identifier—not a random UUID, but a meaningful reference that captures *how* we refer to the content.
+Every participant in the KOI network is a **node**. The `NodeInterface` class serves as the embodiment of each node, wiring together multiple interconnected subsystems:
 
 ```
-orn:discourse.forum.regen.network:topic/12345
-orn:github.com:regen-network/regen-ledger/blob/main/README.md
-orn:web.page:registry.regen.network/carbon-credits
+NodeInterface
+├── identity      (who am I in the network?)
+├── cache         (what do I remember locally?)
+├── effector      (how do I resolve references?)
+├── graph         (who do I know, and how?)
+├── pipeline      (how do I process knowledge?)
+├── processor     (how do I handle specific events?)
+└── network_interface (how do I communicate?)
 ```
 
-These RIDs create a shared vocabulary. When an AI agent references a piece of knowledge, any other agent (or human) can locate exactly the same source. No ambiguity. No hallucination. Verifiable citation.
+Nodes come in two types:
 
-### The FUN Event System: Knowledge That Breathes
+**Full Nodes** operate as web servers, receiving knowledge through webhooks. They maintain persistent connections and can broadcast to many subscribers simultaneously. Think of these as the major hub cities in a transportation network.
 
-KOI networks communicate through events, forming the "FUN" triad:
+**Partial Nodes** operate as web clients, polling for updates. They're lighter weight and can run anywhere - in a browser, a mobile app, or an AI agent's runtime. These are the local stations that keep smaller communities connected.
 
-- **F**ORGET - A piece of knowledge has been removed or superseded
-- **U**PDATE - A piece of knowledge has been modified
-- **N**EW - A piece of knowledge has appeared for the first time
-
-These aren't database operations—they're *signals*. When a new forum post appears, the Discourse sensor emits a NEW event. Other nodes in the network decide independently how to respond. One might index it for search. Another might extract entities for a knowledge graph. A third might ignore it entirely if it's outside its domain of interest.
-
-This event-driven architecture means KOI networks are **living systems**. They respond to changes in real-time. They're decentralized by design—no central authority decides what's important. Each node maintains autonomy while contributing to collective intelligence.
+This hybrid architecture means KOI can scale from a single laptop running a sensor to a global network processing millions of knowledge updates daily.
 
 ### Nodes, Sensors, Processors: The Anatomy of a KOI Network
+
 ![KOI Network Node Types](../images/block-science-koi/koi2.png)
 *Different types of nodes in a KOI-net, categorized by their relationship to the boundary between the network and the external world. Image created by Luke Miller for BlockScience.*
 
@@ -202,59 +189,78 @@ The beauty of this architecture is its **fractal nature**: a network of nodes ca
 ## The Regen KOI Network: A Living Map
 
 ![Regen KOI Network](../images/regen-koi-network.png)
-*The architecture of a RegenAI's KOI Network.*
+*The complete architecture of RegenAI's Knowledge Organization Infrastructure—from sensors at the edge to intelligent agents at the center.*
 
-The diagram above reveals the foundational architecture that powers Regen AI's KOI implementation. Let's walk through it:
+The diagram above reveals a production system that has evolved significantly since our initial deployment. What began as a simple document search has grown into a sophisticated knowledge processing pipeline spanning eight sensors, three storage layers, and multiple intelligence services. Let's trace the flow from the network's edges toward its intelligent center.
 
-### The Sensory Array (Blue Nodes)
+### Sensors: The Network's Eyes and Ears (Blue)
 
-At the network's edge, a constellation of sensors continuously monitors the Regen ecosystem:
+At the periphery of the network, eight specialized sensors continuously monitor the Regen ecosystem. Each sensor is purpose-built for its platform, understanding the nuances of how that platform structures and delivers content:
 
-- **Discourse Sensor**: Monitors forum.regen.network for new topics, replies, and governance discussions
-- **Website Sensor**: Crawls documentation across docs.regen.network, guides.regen.network, and registry.regen.network
-- **GitHub Sensor**: Tracks code changes across regen-network repositories
-- **Podcast Sensor**: Indexes the Planetary Regeneration Podcast transcripts
-- **Notion Sensor**: Captures internal documentation and research notes
-- **Medium Sensor**: Follows blog posts from the Regen publication
-- **Twitter/Telegram Sensors**: Monitor community conversations
+| Sensor        | What It Monitors                                            | Access   |
+| ------------- | ----------------------------------------------------------- | -------- |
+| **Discourse** | Forum discussions, governance proposals, community Q&A      | Public   |
+| **GitHub**    | Code changes, issues, PRs across 5+ repositories            | Public   |
+| **Website**   | Documentation at docs.regen.network, registry.regen.network | Public   |
+| **Podcast**   | Planetary Regeneration Podcast (68+ transcribed episodes)   | Public   |
+| **Medium**    | Regen Network blog posts and thought leadership             | Public   |
+| **Notion**    | Internal documentation and research notes                   | Internal |
+| **Twitter**   | Community conversations and announcements                   | Public   |
+| **Telegram**  | Channel updates and group discussions                       | Public   |
 
-Each sensor speaks the KOI protocol, emitting events when content changes. They're "partial nodes"—they can observe and report but don't serve queries directly.
+Each sensor speaks the KOI protocol natively, emitting events whenever content changes. When someone posts a new governance proposal on the forum, the Discourse sensor detects it within minutes and emits a NEW event. When that post is edited, an UPDATE event follows. If it's deleted, a FORGET event signals that the knowledge should be removed from downstream caches.
 
-### The Coordinator (Red Node)
+These sensors are what the KOI protocol calls "partial nodes"—they observe and report but don't serve queries directly. This lightweight design means sensors can run anywhere, from cloud servers to edge devices, scaling horizontally as the ecosystem grows.
 
-At the center sits the **KOI Coordinator**, the routing hub that:
-- Registers new sensors and processors as they join
-- Maintains the network graph of who-connects-to-whom
-- Routes events to interested subscribers
-- Enables node discovery for AI agents seeking knowledge
+### The Coordination Layer (Purple)
 
-### The Processing Pipeline (Purple Nodes)
+All sensor events flow inward to the coordination layer, where three components work together to manage the knowledge pipeline:
 
-**Event Bridge**: Receives events from sensors and coordinates their processing. Handles deduplication (the same content from multiple sources), versioning (tracking how content changes over time), and routing to downstream processors.
+**KOI Coordinator** sits at the center of the sensor array, serving as the central routing hub where all events converge. It maintains a registry of every node in the network, tracks their health through periodic heartbeats, and routes events to the processors that need them. When a new sensor comes online, it registers with the Coordinator and immediately becomes part of the knowledge network.
 
-**BGE Embeddings**: Generates 1024-dimensional semantic vectors using the BAAI/BGE-large-en-v1.5 model. These vectors capture *meaning*, enabling semantic search that understands "soil carbon sequestration" relates to "carbon farming" even without exact keyword matches.
+**Forwarder** bridges the Coordinator to the processing pipeline. It ensures reliable event delivery with confirmation tracking—if the Event Bridge is temporarily unavailable, the Forwarder queues events and retries until delivery succeeds. This resilience means no knowledge is lost even during system maintenance.
 
-### The Storage Layer (Pink Nodes)
+**Event Bridge** is the workhorse of the entire system. Every piece of knowledge passes through here, where several critical operations occur:
+- *Deduplication*: The same content might arrive from multiple sensors (a Medium post that's also shared on Twitter). The Event Bridge recognizes duplicates by their content hash and processes each piece of knowledge exactly once.
+- *Versioning*: When content changes, the Event Bridge doesn't overwrite—it creates a new version and marks the previous one as superseded. This preserves the full history of how knowledge evolved.
+- *Chunking*: Long documents are split into smaller chunks (1000 characters with 200-character overlap) optimized for embedding and retrieval.
+- *Provenance*: Every transformation generates a CAT (Content Addressable Transformation) receipt, creating an auditable chain from source to storage.
 
-**PostgreSQL with pgvector**: Stores document content and embeddings, enabling fast similarity search across 15,000+ documents.
+### Processing: From Text to Intelligence (Purple)
 
-**Apache Jena**: Stores knowledge as RDF triples—a graph database that captures relationships between entities. Who wrote what? Which methodologies apply to which credit classes? What projects implement what approaches?
+Two specialized processors transform raw content into queryable knowledge:
 
-### The Intelligence Layer (Cyan Nodes)
+**BGE Embeddings** converts text into 1024-dimensional semantic vectors using the BAAI/BGE-large-en-v1.5 model. These vectors are mathematical representations of *meaning*—documents about similar concepts cluster together in vector space even when they use different words. This is why searching for "soil carbon sequestration" also surfaces documents about "carbon farming" and "regenerative grazing"—the model understands these concepts are related.
 
-**MCP Server**: The interface that AI agents use to query this knowledge. Through the Model Context Protocol, any Claude session, VSCode Copilot, or other MCP-compatible client can:
-- Search semantically across all knowledge
-- Query the knowledge graph with natural language
-- Generate weekly digests of activity
-- Retrieve statistics about the knowledge base
+**Tree-sitter AST Parser** is our newest addition, enabling deep code intelligence. Rather than treating source code as plain text, it parses code into Abstract Syntax Trees that understand programming language structure. From these trees, it extracts typed entities: Methods, Functions, Structs, Interfaces, and Cosmos SDK-specific constructs like Keepers, Messages, and Queries. This is what powers questions like "Which Keeper handles MsgCreateBatch?" or "What functions call the credit retirement handler?"
 
-**Eliza Agents**: Autonomous AI agents that use this knowledge to engage with communities—answering questions, generating content, participating in governance discussions.
+### Three Storage Layers (Pink)
 
-### The Curator Layer (Orange Nodes)
+Perhaps the most distinctive aspect of our architecture is maintaining **three complementary knowledge stores**, each optimized for different query patterns:
 
-**Daily Curator**: Analyzes each day's knowledge changes, identifies patterns and highlights, prepares summaries for stakeholders.
+**PostgreSQL + pgvector** serves as the semantic layer. Over 15,000 document chunks live here, each paired with its BGE embedding vector. When you ask a question, your query is embedded into the same vector space, and pgvector finds the chunks whose meaning most closely matches. This is fast (sub-second queries) and intuitive—you don't need to know the exact keywords, just the concepts you're interested in.
 
-**Weekly Curator**: Synthesizes a week's worth of activity into comprehensive digests—the foundation for automated content generation.
+**PostgreSQL + Apache AGE** provides the code graph. Currently holding 26,768 code entities connected by 11,331 CALLS relationships, this graph database lets you traverse all of the regen network codebases structurally, find all functions that call a particular method, identify orphaned code that's never invoked, and understand how modules depend on each other. The graph structure captures relationships that flat search simply cannot.
+
+**Apache Jena Fuseki** maintains the knowledge graph with approximately 101,903 RDF triples. This is where we store semantic relationships between entities: which methodologies apply to which credit classes, who authored which documents, what projects implement which approaches. The SPARQL query language enables complex reasoning—finding all projects that use a particular methodology AND were registered in 2024 AND involve soil carbon.
+
+### Intelligence Services (Cyan)
+
+The intelligence layer is where knowledge becomes accessible to both humans and AI:
+
+**MCP Server** provides the unified interface that AI agents use to query the knowledge network. When you ask Claude a question about Regen Network, the MCP Server orchestrates queries across all three storage layers in parallel. Vector search finds semantically relevant documents. Graph queries surface structured relationships. SPARQL retrieves precise facts. The results are fused using Reciprocal Rank Fusion (RRF), which intelligently combines rankings from different sources into a single, coherent response—complete with citations back to primary sources.
+
+Any MCP-compatible client can connect: Claude Desktop, Claude Code, VSCode with Copilot, Cursor, Windsurf, and many others. This means the entire Regen knowledge network is accessible from whatever AI tool you prefer.
+
+**Eliza Agents** are autonomous AI personalities that use this knowledge to engage with communities directly. Five agents currently operate: RegenAI (the primary assistant), Voice of Nature (ecological perspective), Governor (governance focus), Advocate (community outreach), and Narrative (storytelling). Each agent can answer questions, generate content, and participate in discussions—grounded in the verified knowledge from KOI rather than hallucinating responses.
+
+### Curation Layer (Dashed)
+
+Finally, two curator services synthesize the constant flow of knowledge into digestible summaries:
+
+**Daily Curator** analyzes each day's knowledge changes, looking for patterns and highlights. It identifies governance-related posts, flags significant technical updates, and prepares summaries for stakeholders who want to stay informed without reading everything.
+
+**Weekly Curator** takes a longer view, synthesizing seven days of activity into comprehensive digests. These digests capture the arc of ongoing discussions, track how proposals evolve, and identify themes emerging across the ecosystem. The Weekly Curator's output powers the automated podcasts at [digest.gaiaai.xyz](https://digest.gaiaai.xyz/), transforming a week of community activity into a coherent audio narrative.
 
 ---
 
@@ -307,6 +313,10 @@ The `generate_weekly_digest` function in the KOI MCP orchestrates this process:
 
 5. **Distribution**: The finished podcast publishes to the digest platform, RSS feeds, and podcast directories
 
+**New: Full Meeting Transcripts**
+
+The `get_notebooklm_export` tool now includes complete meeting transcripts from the Regen Tokenomics weekly meetings. Rather than summaries, you get the full verbatim content—perfect for deep dives, fact-checking, or feeding into NotebookLM for your own audio summaries. This export saves directly to a file, reducing LLM context usage by 99% while preserving all source material.
+
 ### The Magic of Automated Curation
 
 What makes this remarkable isn't just automation—it's *coherent synthesis*. The AI doesn't simply concatenate summaries. It identifies narrative threads:
@@ -325,101 +335,200 @@ This is the voice of collective intelligence made audible.
 
 ## Tutorial: Connect to the KOI Brain
 
-Ready to tap into this knowledge network yourself? Here's how to connect the KOI MCP to your AI workflow.
+Ready to tap into this knowledge network yourself? Here's how to connect the KOI MCP to your AI workflow. Currently, RegenAI is supporting two ways to connect to the Regen KOI MCP, through claude code, or through our custom gpt. It's also possible to connect in other environments like claude desktop and additional environments will be supported in the future. 
 
-### Option 1: Claude Desktop (Easiest)
+### Option 1: Claude Code
 
-**One-Line Install:**
+1. Clone and build the Repository 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/gaiaaiagent/regen-koi-mcp/main/install.sh | bash
+cd
+mkdir regen-koi-mcp
+cd regen-koi-mcp
+git clone https://github.com/gaiaaiagent/regen-koi-mcp.git
+cd regen-koi-mcp
+npm install
+npm run build
+cd ..
 ```
 
-This automatically configures Claude Desktop. Just restart the app and you're connected!
-
-**Manual Configuration:**
-
-Edit your Claude Desktop config file:
-- **Mac**: `~/Library/Application Support/Claude/claude_desktop_config.json`
-- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
-- **Linux**: `~/.config/Claude/claude_desktop_config.json`
-
-Add this configuration:
+2. Connect with Claude Code (In `~/regen-koi-mcp`)
+Place the following in `~/regen-koi-mcp/.mcp.json`. Replace `USER` with your username on your system.
 ```json
 {
   "mcpServers": {
-    "regen-koi": {
-      "command": "npx",
-      "args": ["-y", "regen-koi-mcp@latest"],
-      "env": {
-        "KOI_API_ENDPOINT": "https://regen.gaiaai.xyz/api/koi"
-      }
+      "regen-koi": {
+        "command": "node",
+        "args": ["/home/USER/regen-koi-mcp/regen-koi-mcp/dist/index.js"],
+        "env": {
+          "KOI_API_ENDPOINT": "https://regen.gaiaai.xyz/api/koi",
+          "JENA_ENDPOINT": "https://regen.gaiaai.xyz/api/koi/fuseki/koi/sparql"
+        }
+      },
     }
-  }
 }
 ```
 
-Restart Claude Desktop, and you'll have access to KOI tools!
-
-### Option 2: Claude Code CLI
-
-```bash
-# Add the MCP server
-claude mcp add regen-koi npx -y regen-koi-mcp@latest
-
-# Set the environment variable
-export KOI_API_ENDPOINT=https://regen.gaiaai.xyz/api/koi
-```
-
-### Option 3: VS Code / VS Code Insiders
-
-```bash
-code --add-mcp '{"name":"regen-koi","command":"npx","args":["-y","regen-koi-mcp@latest"],"env":{"KOI_API_ENDPOINT":"https://regen.gaiaai.xyz/api/koi"}}'
-```
-
-### Option 4: Other MCP Clients
-
-Any MCP-compatible client (Cursor, Windsurf, Cline, Continue, Goose, etc.) can use:
-
+Place the following in `~/regen-koi-mcp/.claude/settings.json`
 ```json
 {
-  "command": "npx",
-  "args": ["-y", "regen-koi-mcp@latest"],
-  "env": {
-    "KOI_API_ENDPOINT": "https://regen.gaiaai.xyz/api/koi"
-  }
+  "enableAllProjectMcpServers": true
 }
 ```
+
+3. In your terminal open claude (In `~/regen-koi-mcp`)
+```
+claude
+
+# In claude verify the mcp is connected.
+/mcp
+```
+
+You should see the following:
+![[Pasted image 20251202111006.png]]
+
+4. Test it out
+```
+# In claude code
+Please search the koi network for the notes on the latest governance discussions on the forum.
+```
+
+
+### Option 2: Regen KOI GPT
+![Regen KOI GPT](../images/regen-koi-gpt.png)
+https://chatgpt.com/g/g-692f3c6bc5e48191b3d1721f4a8ccdec-regen-koi-gpt
+
+### Option 3: Connect Via NPX
+
+See the installation instructions on the project README to install on various platforms using NPX:
+
+https://github.com/gaiaaiagent/regen-koi-mcp
 
 ### Using KOI Tools
 
-Once connected, you have three powerful tools:
+Once connected, you have access to a powerful suite of tools that continue to expand:
 
-**`search_knowledge`** - Hybrid semantic + graph search
+**Knowledge Base Search**
+
+| Tool | Description |
+|------|-------------|
+| `search_knowledge` | Hybrid semantic + graph search with date filtering |
+| `get_stats` | Knowledge base statistics |
+| `generate_weekly_digest` | Create curated weekly summaries |
+| `get_notebooklm_export` | Export full content for NotebookLM (saves to file, 99% context reduction) |
+
+**Code Knowledge Graph** *(New!)*
+
+| Tool | Description |
+|------|-------------|
+| `query_code_graph` | Query relationships between Keepers, Messages, and Events |
+| `search_github_docs` | Search across 5 indexed Regen GitHub repositories |
+| `get_repo_overview` | Get structured overview of repository architecture |
+| `get_tech_stack` | Understand languages, frameworks, and dependencies |
+
+**Authentication** *(Team Members)*
+
+| Tool | Description |
+|------|-------------|
+| `regen_koi_authenticate` | OAuth login for @regen.network email to access internal docs |
+
+
+### Connecting Over API
+
+For developers who want to integrate KOI directly into their applications, the knowledge base is accessible via a REST API. The base URL is:
+
 ```
-"Search the KOI knowledge base for information about soil carbon methodologies"
+https://regen.gaiaai.xyz/api/koi
 ```
 
-**`get_stats`** - Knowledge base statistics
-```
-"Get statistics about the Regen knowledge base"
+**Available Endpoints:**
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/health` | GET | Check API health, database status, and document counts |
+| `/query` | POST | Hybrid semantic search across all knowledge sources |
+| `/graph` | POST | Query the code knowledge graph for entity relationships |
+| `/stats` | GET | Get knowledge base statistics by source and time period |
+| `/weekly-digest` | GET | Generate curated weekly summary of ecosystem activity |
+| `/weekly-digest/notebooklm` | GET | Full export with complete source content for NotebookLM |
+
+**Example: Searching the Knowledge Base**
+
+```bash
+curl -X POST https://regen.gaiaai.xyz/api/koi/query \
+  -H "Content-Type: application/json" \
+  -d '{"question": "How do carbon credits work on Regen Network?", "limit": 5}'
 ```
 
-**`generate_weekly_digest`** - Create comprehensive summaries
+**Example: Querying the Code Graph**
+
+```bash
+curl -X POST https://regen.gaiaai.xyz/api/koi/graph \
+  -H "Content-Type: application/json" \
+  -d '{"query_type": "keeper_for_msg", "entity_name": "MsgCreateBatch"}'
 ```
-"Generate a weekly digest of Regen Network activity from the past week"
-```
+
+The API supports date filtering on search queries (`published_from`, `published_to`) and various graph query types including `search_entities`, `find_by_type`, `find_callers`, `find_callees`, and module exploration.
+
+For full API documentation, see the [API Endpoints Guide](https://github.com/gaiaaiagent/regen-koi-mcp/blob/main/docs/API_ENDPOINTS.md). An [OpenAPI 3.1 schema](https://github.com/gaiaaiagent/regen-koi-mcp/tree/main/docs) is also available for integration with tools like Custom GPTs or API clients.
 
 ### Example Queries to Try
 
 Once configured, try asking Claude:
 
+**Knowledge Search:**
 - *"What are the current governance proposals being discussed in Regen Network?"*
 - *"Explain the Ecometric methodology for grassland carbon credits"*
 - *"What happened in Regen Network over the past two weeks?"*
-- *"How does the credit retirement process work?"*
+
+**Code Intelligence:**
+- *"How does MsgCreateBatch work in the ecocredit module?"*
+- *"What keepers handle credit retirement?"*
+- *"Show me the structure of the basket module"*
+
+**Digests & Exports:**
 - *"Generate a weekly digest and save it to a file"*
+- *"Get the full NotebookLM export with all forum posts"*
 
 Each response comes grounded in verified knowledge, with citations you can follow to primary sources.
+
+
+---
+
+### What's New: Full-Stack Regen Intelligence
+
+The KOI MCP has evolved beyond document search into a full-stack technical assistant. Five Regen repositories are now indexed with deep code understanding:
+
+- **regen-ledger** (18,619 entities) - The Cosmos SDK blockchain
+- **regen-web** (3,164 entities) - The TypeScript/React frontend
+- **regen-data-standards** - JSON schemas for ecological data
+- **regen-registry-handbook** - Registry policies and procedures
+- **regen-registry-methodology-library** - Credit methodologies
+
+The new code graph tools use tree-sitter AST parsing to extract Methods, Functions, Structs, Interfaces, Keepers, and Messages. You can now ask questions like:
+
+- *"Which Keeper handles MsgCreateBatch in the ecocredit module?"*
+- *"What functions call the credit retirement handler?"*
+- *"Show me the tech stack for regen-ledger"*
+- *"Search for validator setup documentation across all repos"*
+
+![Code Graph Visualization](../images/PLACEHOLDER_CODE_GRAPH.png)
+*The code knowledge graph showing relationships between modules, keepers, messages, and functions across the Regen codebase. [IMAGE PLACEHOLDER - will be replaced]*## 
+
+
+
+We've only scratched the surface. The KOI MCP currently emphasizes semantic search—finding documents by meaning. But the Apache Jena knowledge graph holds even greater potential.
+
+![Knowledge Graph Expansion](../images/PLACEHOLDER_GRAPH_FUTURE.png)
+*The evolving knowledge graph: from document search to relationship reasoning to predictive intelligence. [IMAGE PLACEHOLDER - will be replaced]*
+
+Soon, you'll be able to ask questions that traverse relationships:
+
+- *"Which projects use methodologies developed by Regen Foundation?"*
+- *"What credit classes have seen the most issuance growth this year?"*
+- *"Show me the governance history of parameter X"*
+
+The graph doesn't just store facts—it stores *structure*. And structure enables reasoning that flat search cannot.
+
 
 ---
 
@@ -437,6 +546,9 @@ This isn't knowledge *extraction*—it's knowledge *cultivation*. Every sensor t
 
 Human communities have always organized knowledge—through stories, libraries, institutions. KOI represents a new form: **machine-augmented collective intelligence**.
 
+![Collective Intelligence Flow](../images/PLACEHOLDER_COLLECTIVE_INTELLIGENCE.png)
+*How individual contributions flow through the KOI network to become collective wisdom. [IMAGE PLACEHOLDER - will be replaced]*
+
 The AI doesn't replace human knowledge-makers. It amplifies them. A thoughtful forum post by a community member becomes discoverable by anyone, anywhere, at any time. A governance decision becomes contextualized within the full history of prior decisions. A methodology improvement becomes linked to all the projects it might benefit.
 
 ### Regenerative Agency
@@ -446,20 +558,6 @@ Here's the connection to our larger mission: **legible knowledge enables coordin
 The Voice of Nature agent we introduced in Week 1? It draws on KOI to understand the state of ecological projects. The Registry Review agent? It searches KOI for methodology documentation and precedent. Every Regen AI agent inherits the collective intelligence of the network.
 
 This is how we scale regenerative agency beyond individual humans. Not by replacing human wisdom, but by making it accessible to intelligent systems that can apply it at planetary scale.
-
----
-
-## What's Next: The Graph Awakens
-
-We've only scratched the surface. The KOI MCP currently emphasizes semantic search—finding documents by meaning. But the Apache Jena knowledge graph holds even greater potential.
-
-Soon, you'll be able to ask questions that traverse relationships:
-
-- *"Which projects use methodologies developed by Regen Foundation?"*
-- *"What credit classes have seen the most issuance growth this year?"*
-- *"Show me the governance history of parameter X"*
-
-The graph doesn't just store facts—it stores *structure*. And structure enables reasoning that flat search cannot.
 
 ---
 
@@ -486,8 +584,6 @@ Next week, we turn from knowledge to action. We'll explore the **Registry Review
 - The 7-stage automated review workflow
 - Document classification and evidence extraction
 - How we're targeting 70% reduction in review time
-- Becca's experience partnering with her AI counterpart
-- Live demo of document processing
 
 We'll show how knowledge (from KOI) meets process (the registry) meets intelligence (the agent)—creating an end-to-end system where AI amplifies human expertise.
 
@@ -495,12 +591,23 @@ We'll show how knowledge (from KOI) meets process (the registry) meets intellige
 
 ## Resources & Links
 
+**Getting Started:**
 - **Regen KOI MCP**: [github.com/gaiaaiagent/regen-koi-mcp](https://github.com/gaiaaiagent/regen-koi-mcp)
-- **Weekly Digest Podcast**: [digest.gaiaai.xyz](https://digest.gaiaai.xyz/)
+- **KOI MCP User Guide**: [github.com/gaiaaiagent/regen-koi-mcp/docs/USER_GUIDE.md](https://github.com/gaiaaiagent/regen-koi-mcp/blob/main/docs/USER_GUIDE.md)
+- **KOI Dashboard**: [regen.gaiaai.xyz/koi](https://regen.gaiaai.xyz/koi)
+
+**Weekly Digests:**
+- **Podcast & Digests**: [digest.gaiaai.xyz](https://digest.gaiaai.xyz/)
+
+**KOI Protocol:**
 - **BlockScience KOI Research**: [blog.block.science/a-preview-of-the-koi-net-protocol](https://blog.block.science/a-preview-of-the-koi-net-protocol/)
 - **KOI-net Demo Video**: [youtube.com/watch?v=ifeQfpEQx8I](https://www.youtube.com/watch?v=ifeQfpEQx8I) - Setting up a distributed knowledge network
 - **KOI-net Protocol Spec**: [github.com/BlockScience/koi-net](https://github.com/BlockScience/koi-net)
+- **KOI Master Implementation Guide**: [github.com/DarrenZal/koi-research/.../KOI_MASTER_IMPLEMENTATION_GUIDE.md](https://github.com/DarrenZal/koi-research/blob/regen-prod/docs/KOI_MASTER_IMPLEMENTATION_GUIDE.md)
+
+**Community:**
 - **Tuesday Stand-up**: Join us Tuesdays for live development updates
+- **KOI Query Interface**: [regen.gaiaai.xyz/koi/query](https://regen.gaiaai.xyz/koi/query)
 - **Previous Update**: [Week 1 - Foundation & Kickoff](/t/week-1-12-regen-ai-update-foundation-kickoff-november-18-2025/123)
 
 ---
