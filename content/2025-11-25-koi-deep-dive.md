@@ -496,6 +496,9 @@ Each response comes grounded in verified knowledge, with citations you can follo
 
 ### What's New: Full-Stack Regen Intelligence
 
+![Code Graph - Interactive Detail](../images/regen-koi-graph.png)
+*Exploring the code graph interactively. Clicking any entity reveals its type, repository, file location, and a link to view the source on GitHub. The legend shows entity type distribution: Functions, Entities, Interfaces, Structs, Classe, and Messages.*
+
 The KOI MCP has evolved beyond document search into a full-stack technical assistant. Five Regen repositories are now indexed with deep code understanding:
 
 - **regen-ledger** (18,619 entities) - The Cosmos SDK blockchain
@@ -511,23 +514,6 @@ The new code graph tools use tree-sitter AST parsing to extract Methods, Functio
 - *"Show me the tech stack for regen-ledger"*
 - *"Search for validator setup documentation across all repos"*
 
-![Code Graph Visualization](../images/PLACEHOLDER_CODE_GRAPH.png)
-*The code knowledge graph showing relationships between modules, keepers, messages, and functions across the Regen codebase. [IMAGE PLACEHOLDER - will be replaced]*## 
-
-
-
-We've only scratched the surface. The KOI MCP currently emphasizes semantic search—finding documents by meaning. But the Apache Jena knowledge graph holds even greater potential.
-
-![Knowledge Graph Expansion](../images/PLACEHOLDER_GRAPH_FUTURE.png)
-*The evolving knowledge graph: from document search to relationship reasoning to predictive intelligence. [IMAGE PLACEHOLDER - will be replaced]*
-
-Soon, you'll be able to ask questions that traverse relationships:
-
-- *"Which projects use methodologies developed by Regen Foundation?"*
-- *"What credit classes have seen the most issuance growth this year?"*
-- *"Show me the governance history of parameter X"*
-
-The graph doesn't just store facts—it stores *structure*. And structure enables reasoning that flat search cannot.
 
 
 ---
@@ -538,26 +524,17 @@ The technical architecture is impressive, but the deeper significance lies in wh
 
 ### Knowledge as Commons
 
-Just as the Regen Registry creates a commons for ecological assets, KOI creates a commons for knowledge. The protocol is open. The data is accessible. Anyone can run a KOI node, contribute knowledge, or build new applications on the infrastructure.
-
-This isn't knowledge *extraction*—it's knowledge *cultivation*. Every sensor that monitors a forum, every embedding that captures meaning, every graph edge that connects concepts, adds to a shared resource that benefits everyone in the ecosystem.
+Just as the Regen Registry creates a commons for ecological assets, KOI creates a commons for knowledge. The protocol is open. The data is accessible. Anyone can run a KOI node, contribute knowledge, or build new applications on the infrastructure. Every sensor that monitors a forum, every embedding that captures meaning, every graph edge that connects concepts, adds to a shared resource that benefits everyone in the ecosystem.
 
 ### Collective Intelligence at Scale
 
-Human communities have always organized knowledge—through stories, libraries, institutions. KOI represents a new form: **machine-augmented collective intelligence**.
-
-![Collective Intelligence Flow](../images/PLACEHOLDER_COLLECTIVE_INTELLIGENCE.png)
-*How individual contributions flow through the KOI network to become collective wisdom. [IMAGE PLACEHOLDER - will be replaced]*
-
-The AI doesn't replace human knowledge-makers. It amplifies them. A thoughtful forum post by a community member becomes discoverable by anyone, anywhere, at any time. A governance decision becomes contextualized within the full history of prior decisions. A methodology improvement becomes linked to all the projects it might benefit.
+Human communities have always organized knowledge—through stories, libraries, institutions. KOI represents a new form: **machine-augmented collective intelligence**. A thoughtful forum post by a community member becomes discoverable by anyone, anywhere, at any time. A governance decision becomes contextualized within the full history of prior decisions. A methodology improvement becomes linked to all the projects it might benefit.
 
 ### Regenerative Agency
 
-Here's the connection to our larger mission: **legible knowledge enables coordinated action**.
+Here's the connection to our larger mission: **legible knowledge enables coordinated action**...
 
-The Voice of Nature agent we introduced in Week 1? It draws on KOI to understand the state of ecological projects. The Registry Review agent? It searches KOI for methodology documentation and precedent. Every Regen AI agent inherits the collective intelligence of the network.
 
-This is how we scale regenerative agency beyond individual humans. Not by replacing human wisdom, but by making it accessible to intelligent systems that can apply it at planetary scale.
 
 ---
 
@@ -569,9 +546,7 @@ As we build this knowledge infrastructure together, we want your input:
 
 2. **What queries would you love to ask?** If you could ask the Regen knowledge brain anything, what would it be? These inform our development priorities.
 
-3. **How should we handle permissions?** Some knowledge is internal, some is community-only, some is public. How do we balance openness with appropriate access control?
-
-4. **Would you run a KOI node?** For those technically inclined, would you want to run sensors or processors as part of a distributed knowledge network?
+3. **Would you run a KOI node?** For those technically inclined, would you want to run sensors or processors as part of a distributed knowledge network?
 
 Share your thoughts in the comments below!
 
