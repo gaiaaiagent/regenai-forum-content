@@ -12,11 +12,11 @@
 ## From Data to Wisdom: A Journey Into the Mycelial Mind
 
 *"Today's information environment is defined by a strange inversion: Instead of inhabiting a shared reality from which a variety of knowledge objects emerge, we inhabit a variety of realities that each emerge from a particular collection of knowledge objects their inhabitants hold in common."*
-— BlockScience, A Preview of the KOI-net Protocol
+— BlockScience, [A Preview of the KOI-net Protocol](https://blog.block.science/a-preview-of-the-koi-net-protocol/) (2024)
 
-Last week, we introduced Regen AI's three foundational MCP servers. This week, we descend into the mycelium—the vast underground network that connects everything in the forest of regenerative knowledge. Welcome to the Regen KOI MCP: the knowledge brain that transforms scattered documents into planetary intelligence.
+Last week, we introduced [Regen AI's three foundational MCP servers](https://forum.regen.network/t/announcing-regen-ai/553). This week, we descend into the mycelium—the vast underground network that connects everything in the forest of regenerative knowledge. Welcome to the Regen KOI MCP: the knowledge brain that transforms scattered documents into planetary intelligence.
 
-**KOI—Knowledge Organization Infrastructure—was created by BlockScience**, the complex systems engineering and R&D firm, in partnership with Metagov and RMIT. Their research represents a fundamental breakthrough in how distributed organizations can establish shared knowledge while preserving autonomy. We're honored to be among the first to implement their protocol at scale, building what may be the most comprehensive knowledge infrastructure in the regenerative economy. What BlockScience designed as a theoretical framework, we've transformed into a living nervous system for planetary intelligence. 
+**KOI—Knowledge Organization Infrastructure—is a [specification](https://github.com/BlockScience/koi-net) created by [BlockScience](https://block.science/)**, the complex systems engineering and R&D firm, in partnership with [Metagov](https://metagov.org/) and [RMIT](https://www.rmit.edu.au/). Their research represents a fundamental breakthrough in how distributed organizations can establish shared knowledge while preserving autonomy. We're honored to be among the first to implement their protocol at scale, building what may be the most comprehensive knowledge infrastructure in the regenerative economy. What BlockScience designed as a theoretical framework, we've transformed into a living nervous system for planetary intelligence. 
 
 KOI is more than a database. It's a living nervous system for regenerative knowledge. When we talk about creating a "legibility layer" for ecological data, we're describing something profound: the ability for any intelligent agent to ask questions of the regenerative economy and receive coherent, contextualized answers. *What methodologies have proven most effective for soil carbon sequestration in tropical regions? How has the Regen community's thinking evolved on biodiversity credits? What patterns emerge when we trace the connections between projects, people, and protocols?*
 
@@ -29,13 +29,13 @@ These questions require more than search. They require understanding.
 Consider the challenge facing anyone entering the regenerative space today. Where does one begin?
 
 The Regen ecosystem sprawls across:
-- **Forum discussions** spanning years of governance debates and community insights
-- **Technical documentation** for the ledger, registry, and data modules
-- **Methodology specifications** for carbon, biodiversity, and soil health credits
-- **Blog posts and newsletters** capturing evolving thought leadership
-- **Community calls** where decisions are made in conversation
-- **GitHub repositories** where code embodies intention
-- **Podcast transcripts** distilling hours of wisdom into accessible narrative
+- **[Forum discussions](https://forum.regen.network)** spanning years of governance debates and community insights
+- **[Technical documentation](https://docs.regen.network)** for the ledger, registry, and data modules
+- **[Methodology specifications](https://registry.regen.network/methodologies)** for carbon, biodiversity, and soil health credits
+- **[Blog posts and newsletters](https://medium.com/regen-network)** capturing evolving thought leadership
+- **[Community calls](https://www.youtube.com/@RegenNetwork)** where decisions are made in conversation
+- **[GitHub repositories](https://github.com/regen-network)** where code embodies intention
+- **[Podcast transcripts](https://open.spotify.com/show/1JfD8QvTtpMUtK15CGekbu)** distilling hours of wisdom into accessible narrative
 
 This knowledge doesn't just exist—it *lives*. It changes. It connects in ways that no single document can capture. A governance proposal from 2023 references a methodology document that informed a credit class that now has dozens of active projects generating insights that feed back into new proposals.
 
@@ -66,7 +66,7 @@ What follows is a technical journey through each layer, from the atomic unit of 
 
 ### The RID Protocol: Every Piece of Knowledge Has a Name
 
-At KOI's foundation lies the **Resource Identifier (RID) protocol**. Every document, every post, every piece of knowledge receives a unique identifier—not a random UUID, but a meaningful reference that captures *how* we refer to the content. RID's are unique, permanent addresses in the global knowledge space. RIDs use the ORN (Object Resource Name) format
+At KOI's foundation lies the **Resource Identifier (RID) protocol**. Every document, every post, every piece of knowledge receives a unique identifier—not a random UUID, but a meaningful reference that captures *how* we refer to the content. RIDs are unique, permanent addresses in the global knowledge space. RIDs use the ORN (Object Resource Name) format
 
 ```
 orn:discourse.forum.regen.network:topic/12345
@@ -74,7 +74,7 @@ orn:github.com:regen-network/regen-ledger/blob/main/README.md
 orn:web.page:registry.regen.network/carbon-credits
 ```
 
-These RIDs create a shared vocabulary. When an AI agent references a piece of knowledge, any other agent (or human) can locate exactly the same source, no ambiguity, no hallucination. just verifiable citation. These aren't just identifiers - they're *commitments*. When you reference an RID, you're pointing to a specific piece of knowledge that can be resolved anywhere in the network through the **effector system**. The effector tries three strategies in sequence:
+These RIDs create a shared vocabulary. When an AI agent references a piece of knowledge, any other agent (or human) can locate exactly the same source—no ambiguity, no hallucination, just verifiable citation. These aren't just identifiers—they're *commitments*. When you reference an RID, you're pointing to a specific piece of knowledge that can be resolved anywhere in the network through the **effector system** (the component responsible for turning an RID into actual content). The effector tries three strategies in sequence:
 
 1. **Cache** - Do I already have this locally?
 2. **Action** - Can I generate or fetch it myself?
@@ -87,6 +87,8 @@ Knowledge travels in **Bundles** - containers with two parts:
 - **Contents**: The actual knowledge payload
 
 The manifest's cryptographic hash ensures integrity: you can verify that knowledge hasn't been tampered with as it flows through the network.
+
+With identifiers and bundles established, the next question is: how do nodes communicate changes?
 
 ### The FUN Event System: Knowledge That Breathes
 
@@ -114,6 +116,8 @@ At each phase, **handlers** can inspect, transform, enrich, or block the knowled
 * The **Network output handler** routes updates to interested subscribers
 
 This pipeline architecture means nodes can customize their knowledge processing without breaking protocol compatibility. A methodology-focused node might add handlers that extract entity relationships, while a governance-focused node might prioritize proposal content.
+
+While the pipeline processes individual events, the broader question remains: how do nodes discover each other and coordinate who sends what to whom?
 
 ### The NetworkGraph: Knowledge Topology
 
@@ -156,7 +160,7 @@ This hybrid architecture means KOI can scale from a single laptop running a sens
 
 ### Nodes, Sensors, Processors, Actuators: The Anatomy of a KOI Network
 
-![KOI Network Node Types](../images/block-science-koi/koi2.png)
+![KOI Node Types by Organizational Boundary](../images/block-science-koi/koi2.png)
 *Different types of nodes in a KOI-net, categorized by their relationship to the boundary between the network and the external world. Image created by Luke Miller for BlockScience.*
 
 The KOI-net protocol defines several node types, categorized by their relationship to organizational boundaries:
@@ -269,6 +273,7 @@ Finally, two curator services synthesize the constant flow of knowledge into dig
 Let's trace a piece of knowledge through the network:
 
 ![Regen Knowledge Commons](../images/regen-knowledge-commons.png)
+*The Regen Knowledge Commons: how a single forum post flows through sensors, processors, and storage layers to become searchable, graph-connected knowledge.*
 
 **9:00 AM**: Gregory posts a new governance proposal on forum.regen.network about adjusting credit class parameters.
 
@@ -311,13 +316,9 @@ The `generate_weekly_digest` function in the KOI MCP orchestrates this process:
    - Community discussions worth noting
    - Technical updates and releases
 
-4. **Podcast Generation**: The markdown digest feeds into audio generation tools (like NotebookLM or Podcastfy), creating natural-sounding podcast episodes
+4. **Podcast Generation**: The markdown digest feeds into NotebookLM's audio generation feature, which creates natural-sounding podcast episodes with AI-generated hosts discussing the week's developments
 
 5. **Distribution**: The finished podcast publishes to the digest platform, RSS feeds, and podcast directories
-
-**New: Full Meeting Transcripts**
-
-The `get_notebooklm_export` tool now includes complete meeting transcripts from the Regen Tokenomics weekly meetings. Rather than summaries, you get the full verbatim content—perfect for deep dives, fact-checking, or feeding into NotebookLM for your own audio summaries. This export saves directly to a file, reducing LLM context usage by 99% while preserving all source material.
 
 ### The Magic of Automated Curation
 
@@ -333,16 +334,22 @@ Listen to the latest episode at [digest.gaiaai.xyz](https://digest.gaiaai.xyz/).
 
 This is the voice of collective intelligence made audible.
 
+**Advanced: Full Meeting Transcripts**
+
+The `get_notebooklm_export` tool also includes complete meeting transcripts from the Regen Tokenomics weekly meetings. Rather than summaries, you get the full verbatim content—perfect for deep dives, fact-checking, or feeding into NotebookLM for your own audio summaries. This export saves directly to a file, reducing LLM context usage by 99% while preserving all source material.
+
 ---
 
 ## Tutorial: Connect to the KOI Brain
 
-Ready to tap into this knowledge network yourself? Here's how to connect the KOI MCP to your AI workflow. Currently, RegenAI is supporting two ways to connect to the Regen KOI MCP, through claude code, or through our custom gpt. It's also possible to connect in other environments like claude desktop and additional environments will be supported in the future. 
+Ready to tap into this knowledge network yourself? Here's how to connect the KOI MCP to your AI workflow. RegenAI currently supports several ways to connect: Claude Code, our custom GPT, or via NPX for other environments like Claude Desktop. Additional platforms will be supported in the future. 
 
 ### Option 1: Claude Code
 
-![Regen KOI GPT](../images/regen-koi-gpt-chat2.png)
-![Regen KOI GPT](../images/regen-koi-gpt-chat3.png)
+![KOI MCP Query Example](../images/regen-koi-gpt-chat2.png)
+![KOI MCP Response Example](../images/regen-koi-gpt-chat3.png)
+*Example queries and responses from the KOI MCP—showing how natural language questions return grounded, cited answers.*
+
 1. Clone and build the Repository 
 ```bash
 cd
@@ -387,8 +394,7 @@ claude
 /mcp
 ```
 
-You should see the following:
-![[Pasted image 20251202111006.png]]
+You should see the `regen-koi` server listed with its available tools (`search_knowledge`, `get_stats`, `generate_weekly_digest`, etc.).
 
 4. Test it out
 ```
@@ -398,15 +404,21 @@ Please search the koi network for the notes on the latest governance discussions
 
 
 ### Option 2: Regen KOI GPT
-![Regen KOI GPT](../images/regen-koi-gpt.png)
-https://chatgpt.com/g/g-692f3c6bc5e48191b3d1721f4a8ccdec-regen-koi-gpt
 
+![Regen KOI GPT Interface](../images/regen-koi-gpt.png)
+*The Regen KOI GPT custom assistant—access the full knowledge base directly from ChatGPT.*
+
+**[Launch Regen KOI GPT →](https://chatgpt.com/g/g-692f3c6bc5e48191b3d1721f4a8ccdec-regen-koi-gpt)**
 
 ### Option 3: Connect Via NPX
 
-See the installation instructions on the project README to install on various platforms using NPX:
+For Claude Desktop or other MCP-compatible clients, use the NPX package:
 
-https://github.com/gaiaaiagent/regen-koi-mcp
+```bash
+claude mcp add regen-koi npx regen-koi-mcp@latest
+```
+
+For detailed platform-specific instructions, see the [project README](https://github.com/gaiaaiagent/regen-koi-mcp).
 
 ### Using KOI Tools
 
@@ -464,12 +476,36 @@ curl -X POST https://regen.gaiaai.xyz/api/koi/query \
   -d '{"question": "How do carbon credits work on Regen Network?", "limit": 5}'
 ```
 
+Response (abbreviated):
+```json
+{
+  "results": [
+    {
+      "content": "Carbon credits on Regen Network represent verified...",
+      "source": "docs.regen.network",
+      "score": 0.89
+    }
+  ],
+  "total": 5
+}
+```
+
 **Example: Querying the Code Graph**
 
 ```bash
 curl -X POST https://regen.gaiaai.xyz/api/koi/graph \
   -H "Content-Type: application/json" \
   -d '{"query_type": "keeper_for_msg", "entity_name": "MsgCreateBatch"}'
+```
+
+Response (abbreviated):
+```json
+{
+  "entity": "MsgCreateBatch",
+  "keeper": "Keeper.CreateBatch",
+  "file": "x/ecocredit/base/keeper/msg_create_batch.go",
+  "relationships": ["validates", "emits EventCreateBatch"]
+}
 ```
 
 The API supports date filtering on search queries (`published_from`, `published_to`) and various graph query types including `search_entities`, `find_by_type`, `find_callers`, `find_callees`, and module exploration.
@@ -563,7 +599,7 @@ Here's how the code graph enables deep technical understanding:
 4. **View source**: Click through to `x/ecocredit/base/keeper/msg_retire.go` on GitHub
 5. **Explore context**: See related functions in the same cluster—validation, event emission, state updates
 
-This is intelligence that no document search can provide. You're not just finding *mentions* of retirement—you're tracing the actual execution path through the codebase.
+This is structural intelligence that document search alone cannot efficiently provide. You're not just finding *mentions* of retirement—you're tracing the actual execution path through the codebase.
 
 ### Code Intelligence Tools
 
@@ -591,7 +627,7 @@ Communities have always organized knowledge—through stories, libraries, instit
 
 ### Regenerative Agency
 
-Here's the connection to our larger mission: **legible knowledge enables coordinated action**. Any  Regen agent inherits the collective intelligence of the network through KOI. This is how we scale regenerative agency beyond individuals, by making planetary intelligence accessible at planetary scale. 
+Here's the connection to our larger mission: **legible knowledge enables coordinated action**. Any Regen agent inherits the collective intelligence of the network through KOI. This is how we scale regenerative agency beyond individuals, by making planetary intelligence accessible at planetary scale. 
 
 
 
@@ -627,7 +663,7 @@ We'll show how knowledge (from KOI) meets process (the registry) meets intellige
 
 **Getting Started:**
 - **Regen KOI MCP**: [github.com/gaiaaiagent/regen-koi-mcp](https://github.com/gaiaaiagent/regen-koi-mcp)
-- **KOI MCP User Guide**: [github.com/gaiaaiagent/regen-koi-mcp/docs/USER_GUIDE.md](https://github.com/gaiaaiagent/regen-koi-mcp/blob/main/docs/USER_GUIDE.md)
+- **KOI MCP User Guide**: [User Guide on GitHub](https://github.com/gaiaaiagent/regen-koi-mcp/blob/main/docs/USER_GUIDE.md)
 - **KOI Dashboard**: [regen.gaiaai.xyz/koi](https://regen.gaiaai.xyz/koi)
 
 **Weekly Digests:**
@@ -642,7 +678,7 @@ We'll show how knowledge (from KOI) meets process (the registry) meets intellige
 **Community:**
 - **Tuesday Stand-up**: Join us Tuesdays for live development updates
 - **KOI Query Interface**: [regen.gaiaai.xyz/koi/query](https://regen.gaiaai.xyz/koi/query)
-- **Previous Update**: [Week 1 - Foundation & Kickoff](/t/week-1-12-regen-ai-update-foundation-kickoff-november-18-2025/123)
+- **Previous Update**: [Week 1 - Announcing Regen AI](https://forum.regen.network/t/announcing-regen-ai/553)
 
 ---
 
