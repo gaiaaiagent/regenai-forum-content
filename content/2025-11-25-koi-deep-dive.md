@@ -8,17 +8,21 @@
 * **Key Focus:** How 15,000+ documents become a living planetary intelligence network through Knowledge Organization Infrastructure
 
 ---
+## Quickstart:
 
+To get started with the KOI Regen MCP, test it out with the KOI Regen GPT:
+**[Launch Regen KOI GPT →](https://chatgpt.com/g/g-692f3c6bc5e48191b3d1721f4a8ccdec-regen-koi-gpt)**
+
+To learn additional ways of connecting to the Regen KOI network see the [Tutorial Section below](#tutorial-connect-to-the-koi-brain).
 ## From Data to Wisdom: A Journey Into the Mycelial Mind
 
-*"Today's information environment is defined by a strange inversion: Instead of inhabiting a shared reality from which a variety of knowledge objects emerge, we inhabit a variety of realities that each emerge from a particular collection of knowledge objects their inhabitants hold in common."*
-— BlockScience, [A Preview of the KOI-net Protocol](https://blog.block.science/a-preview-of-the-koi-net-protocol/) (2024)
+*Today's information environment is defined by a strange inversion:* "Instead of inhabiting a shared reality from which a variety of knowledge objects emerge, we inhabit a variety of realities that each emerge from a particular collection of knowledge objects their inhabitants hold in common." — BlockScience, [A Preview of the KOI-net Protocol](https://blog.block.science/a-preview-of-the-koi-net-protocol/) (2024)
 
 Last week, we introduced [Regen AI's three foundational MCP servers](https://forum.regen.network/t/announcing-regen-ai/553). This week, we descend into the mycelium—the vast underground network that connects everything in the forest of regenerative knowledge. Welcome to the Regen KOI MCP: the knowledge brain that transforms scattered documents into planetary intelligence.
 
 **KOI—Knowledge Organization Infrastructure—is a [specification](https://github.com/BlockScience/koi-net) created by [BlockScience](https://block.science/)**, the complex systems engineering and R&D firm, in partnership with [Metagov](https://metagov.org/) and [RMIT](https://www.rmit.edu.au/). Their research represents a fundamental breakthrough in how distributed organizations can establish shared knowledge while preserving autonomy. We're honored to be among the first to implement their protocol at scale, building what may be the most comprehensive knowledge infrastructure in the regenerative economy. What BlockScience designed as a theoretical framework, we've transformed into a living nervous system for planetary intelligence. 
 
-KOI is more than a database. It's a living nervous system for regenerative knowledge. When we talk about creating a "legibility layer" for ecological data, we're describing something profound: the ability for any intelligent agent to ask questions of the regenerative economy and receive coherent, contextualized answers. *What methodologies have proven most effective for soil carbon sequestration in tropical regions? How has the Regen community's thinking evolved on biodiversity credits? What patterns emerge when we trace the connections between projects, people, and protocols?*
+KOI is more than a database, it's a living nervous system for regenerative knowledge. When we talk about creating a "legibility layer" for ecological data, we're describing something profound: the ability for any agent to ask questions to the regenerative economy and receive coherent, contextualized answers. *What methodologies have proven most effective for old growth forest conservation? How has the Regen community's thinking evolved on biodiversity credits? What patterns emerge when we trace the connections between projects, people, and protocols?*
 
 These questions require more than search. They require understanding.
 
@@ -59,7 +63,7 @@ This is infrastructure for the Symbiocene: technology that mirrors natural patte
 
 Understanding KOI requires tracing the path of knowledge from its source to its use. Unlike traditional databases that store static records, KOI treats knowledge as a living flow—continuously updated, cryptographically verified, and semantically connected. The protocol operates through four interlocking systems: **identifiers** that name knowledge unambiguously, **bundles** that package it for transport, **events** that signal changes, and **pipelines** that process it intelligently.
 
-What follows is a technical journey through each layer, from the atomic unit of a Resource Identifier to the emergent topology of a knowledge network. For developers, this is a blueprint. For everyone else, it's a window into the machinery that makes planetary intelligence possible.
+What follows is a technical journey through each layer, from the atomic unit of a Resource Identifiers to the emergent topology of a knowledge network. For developers, this is a blueprint. For everyone else, it's a window into the machinery that makes planetary intelligence possible.
 
 ![KOI Network Node Types](../images/koi-node.png)
 *A KOI node's internal architecture: identity, cache, effector, graph, pipeline, processor, and network interface working together to process and route knowledge through the network.*
@@ -161,7 +165,7 @@ This hybrid architecture means KOI can scale from a single laptop running a sens
 ### Nodes, Sensors, Processors, Actuators: The Anatomy of a KOI Network
 
 ![KOI Node Types by Organizational Boundary](../images/block-science-koi/koi2.png)
-*Different types of nodes in a KOI-net, categorized by their relationship to the boundary between the network and the external world. Image created by Luke Miller for BlockScience.*
+*Different types of nodes in a KOI-net, categorized by their relationship to the boundary between the network and the external world. Image created by Luke Miller for BlockScience. [Source](https://blog.block.science/a-preview-of-the-koi-net-protocol/)*
 
 The KOI-net protocol defines several node types, categorized by their relationship to organizational boundaries:
 
@@ -187,6 +191,8 @@ The KOI-net protocol defines several node types, categorized by their relationsh
 - They feed AI agents that engage with communities
 
 The beauty of this architecture is its **fractal nature**: a network of nodes can itself appear as a single node to an external observer. Regen's entire KOI infrastructure could be one "knowledge node" in a larger planetary KOI network connecting multiple regenerative organizations.
+
+*To learn more: [KOI Nodes as Neurons](https://blog.block.science/koi-nodes-as-neurons/) and the [KOI-net Protocol Spec](https://github.com/BlockScience/koi-net)*
 
 ---
 
@@ -266,6 +272,8 @@ Finally, two curator services synthesize the constant flow of knowledge into dig
 
 **Weekly Curator** takes a longer view, synthesizing seven days of activity into comprehensive digests. These digests capture the arc of ongoing discussions, track how proposals evolve, and identify themes emerging across the ecosystem. The Weekly Curator's output powers the automated podcasts at [digest.gaiaai.xyz](https://digest.gaiaai.xyz/), transforming a week of community activity into a coherent audio narrative.
 
+*To learn more: [KOI Master Implementation Guide](https://github.com/DarrenZal/koi-research/blob/regen-prod/docs/KOI_MASTER_IMPLEMENTATION_GUIDE.md)*
+
 ---
 
 ## How Knowledge Flows: A Day in the Life
@@ -273,7 +281,7 @@ Finally, two curator services synthesize the constant flow of knowledge into dig
 Let's trace a piece of knowledge through the network:
 
 ![Regen Knowledge Commons](../images/regen-knowledge-commons.png)
-*The Regen Knowledge Commons: how a single forum post flows through sensors, processors, and storage layers to become searchable, graph-connected knowledge.*
+*How posting in the community forums or making contributions to Github will trigger cascading contributions to the Regen Knowledge Commons.*
 
 **9:00 AM**: Gregory posts a new governance proposal on forum.regen.network about adjusting credit class parameters.
 
@@ -296,10 +304,11 @@ Total time from post to searchable, graph-connected, citable knowledge: **under 
 ---
 
 ## The Birth of Automated Regenerative Media
-![Data Flow Through KOI-net](../images/regen_digest_podcast.png)
-*The seven-stage data flow through a KOI-net: from collection through processing to user access. Image created by Sayer Tindall for BlockScience.*
 
-Perhaps the most remarkable demonstration of KOI in action is the automated weekly podcast. Visit [digest.gaiaai.xyz](https://digest.gaiaai.xyz/) to experience the first AI-generated Regen Network podcast—a synthesis of each week's activity across the entire ecosystem.
+Perhaps the most remarkable demonstration of KOI in action is the automated weekly podcast.
+
+![Data Flow Through KOI-net](../images/regen_digest_podcast.png)
+*Visit [digest.gaiaai.xyz](https://digest.gaiaai.xyz/) to experience the first AI-generated Regen Network podcast—a synthesis of each week's activity across the entire ecosystem.*
 
 ### How It Works
 
@@ -320,23 +329,6 @@ The `generate_weekly_digest` function in the KOI MCP orchestrates this process:
 
 5. **Distribution**: The finished podcast publishes to the digest platform, RSS feeds, and podcast directories
 
-### The Magic of Automated Curation
-
-What makes this remarkable isn't just automation—it's *coherent synthesis*. The AI doesn't simply concatenate summaries. It identifies narrative threads:
-
-> "This week saw continued discussion of the tokenomics proposal first introduced in October. Building on last week's feedback about liquidity concerns, community members explored new approaches to..."
-
-The AI understands *continuity*. It knows that today's discussion connects to last month's proposal. This is only possible because KOI maintains not just documents but *relationships* between documents through time.
-
-### Experience It Yourself
-
-Listen to the latest episode at [digest.gaiaai.xyz](https://digest.gaiaai.xyz/). What you're hearing is the Regen ecosystem speaking through AI—a synthesis of hundreds of contributions distilled into a coherent narrative.
-
-This is the voice of collective intelligence made audible.
-
-**Advanced: Full Meeting Transcripts**
-
-The `get_notebooklm_export` tool also includes complete meeting transcripts from the Regen Tokenomics weekly meetings. Rather than summaries, you get the full verbatim content—perfect for deep dives, fact-checking, or feeding into NotebookLM for your own audio summaries. This export saves directly to a file, reducing LLM context usage by 99% while preserving all source material.
 
 ---
 
@@ -611,6 +603,8 @@ The new code graph tools make this exploration accessible through natural langua
 - *"Search for validator setup documentation across all repos"*
 - *"What events are emitted when a credit batch is created?"*
 
+A future blog post will be dedicated to the Regen KOI Code Graph and how it's used to power the Regen Full-Stack agent. 
+
 ---
 
 ## The Philosophy of Knowledge Organization
@@ -628,7 +622,6 @@ Communities have always organized knowledge—through stories, libraries, instit
 ### Regenerative Agency
 
 Here's the connection to our larger mission: **legible knowledge enables coordinated action**. Any Regen agent inherits the collective intelligence of the network through KOI. This is how we scale regenerative agency beyond individuals, by making planetary intelligence accessible at planetary scale. 
-
 
 
 ---
@@ -662,21 +655,35 @@ We'll show how knowledge (from KOI) meets process (the registry) meets intellige
 ## Resources & Links
 
 **Getting Started:**
+- **Regen KOI GPT**: [Launch on ChatGPT](https://chatgpt.com/g/g-692f3c6bc5e48191b3d1721f4a8ccdec-regen-koi-gpt)
 - **Regen KOI MCP**: [github.com/gaiaaiagent/regen-koi-mcp](https://github.com/gaiaaiagent/regen-koi-mcp)
 - **KOI MCP User Guide**: [User Guide on GitHub](https://github.com/gaiaaiagent/regen-koi-mcp/blob/main/docs/USER_GUIDE.md)
+- **API Documentation**: [API Endpoints Guide](https://github.com/gaiaaiagent/regen-koi-mcp/blob/main/docs/API_ENDPOINTS.md)
 - **KOI Dashboard**: [regen.gaiaai.xyz/koi](https://regen.gaiaai.xyz/koi)
 
 **Weekly Digests:**
 - **Podcast & Digests**: [digest.gaiaai.xyz](https://digest.gaiaai.xyz/)
 
 **KOI Protocol:**
-- **BlockScience KOI Research**: [blog.block.science/a-preview-of-the-koi-net-protocol](https://blog.block.science/a-preview-of-the-koi-net-protocol/)
-- **KOI-net Demo Video**: [youtube.com/watch?v=ifeQfpEQx8I](https://www.youtube.com/watch?v=ifeQfpEQx8I) - Setting up a distributed knowledge network
+- **BlockScience**: [block.science](https://block.science/) — creators of the KOI specification
+- **A Preview of the KOI-net Protocol**: [BlockScience Blog](https://blog.block.science/a-preview-of-the-koi-net-protocol/)
+- **KOI Nodes as Neurons**: [BlockScience Blog](https://blog.block.science/koi-nodes-as-neurons/)
+- **KOI-net Demo Video**: [YouTube](https://www.youtube.com/watch?v=ifeQfpEQx8I) — Setting up a distributed knowledge network
 - **KOI-net Protocol Spec**: [github.com/BlockScience/koi-net](https://github.com/BlockScience/koi-net)
-- **KOI Master Implementation Guide**: [github.com/DarrenZal/koi-research/.../KOI_MASTER_IMPLEMENTATION_GUIDE.md](https://github.com/DarrenZal/koi-research/blob/regen-prod/docs/KOI_MASTER_IMPLEMENTATION_GUIDE.md)
+- **KOI Master Implementation Guide**: [GitHub](https://github.com/DarrenZal/koi-research/blob/regen-prod/docs/KOI_MASTER_IMPLEMENTATION_GUIDE.md)
+- **Research Partners**: [Metagov](https://metagov.org/) and [RMIT](https://www.rmit.edu.au/)
+
+**Regen Ecosystem:**
+- **Forum**: [forum.regen.network](https://forum.regen.network)
+- **Documentation**: [docs.regen.network](https://docs.regen.network)
+- **Methodology Library**: [registry.regen.network/methodologies](https://registry.regen.network/methodologies)
+- **Blog**: [medium.com/regen-network](https://medium.com/regen-network)
+- **YouTube**: [youtube.com/@RegenNetwork](https://www.youtube.com/@RegenNetwork)
+- **GitHub**: [github.com/regen-network](https://github.com/regen-network)
+- **Podcast**: [Planetary Regeneration Podcast](https://open.spotify.com/show/1JfD8QvTtpMUtK15CGekbu)
 
 **Community:**
-- **Tuesday Stand-up**: Join us Tuesdays for live development updates
+- **Tuesday Stand-up**: [Join us Tuesdays](https://calendar.google.com/calendar/u/0/embed?src=c_1250640b0093c1453ac648937f168c97e48175e7862fb02d38f45e0639df2b25@group.calendar.google.com) for live development updates
 - **KOI Query Interface**: [regen.gaiaai.xyz/koi/query](https://regen.gaiaai.xyz/koi/query)
 - **Previous Update**: [Week 1 - Announcing Regen AI](https://forum.regen.network/t/announcing-regen-ai/553)
 
