@@ -28,7 +28,8 @@
         "/home/ygg/Workspace/cognitive-ecosystem/09-resources/52-regen-mcp/mcp/server/dist/index.js"
       ],
       "env": {
-        "NODE_ENV": "production"
+        "NODE_ENV": "production",
+        "REGEN_RPC_ENDPOINT": "https://regen-rpc.publicnode.com:443"
       },
       "description": "Regen Network MCP Server - Access to Regen Ledger blockchain data"
     }

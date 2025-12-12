@@ -1,0 +1,13 @@
+{
+  "81e67f3e440f": "Claude Code CLI ready for codebase analysis",
+  "6cef53e5398a": "Regen MCP connection failure troubleshooting",
+  "6844062f825d": "Exploring codebase structure and purpose",
+  "b206348df83a": "KOI backend API service unavailable",
+  "673ec34e2a14": "Check MCP server status",
+  "71cf010832a9": "Three MCP servers need backend fixes",
+  "b59d53d82d57": "Investigate Tendermint RPC endpoint infrastructure",
+  "3ab5ab9c71da": "Investigating Regen MCP server RPC endpoint",
+  "61668c88e81f": "Research alternative Regen Network RPC endpoints",
+  "950d9a45edb2": "Investigating Regen Network infrastructure and RPC layer",
+  "4d5fa83017be": "Regen RPC server endpoint returning 502 error"
+}
