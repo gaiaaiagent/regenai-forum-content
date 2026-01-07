@@ -1,5 +1,7 @@
 # The Registry Assistant: Scaling Regenerative Verification Through Intelligent Infrastructure
 
+![Becca at her verification workspace](../../images/week_4/botanical_becca.png)
+
 *Week 4 of Building Planetary Intelligence*
 
 ---
@@ -66,7 +68,7 @@ The Registry Review workflow moves through eight carefully designed stages, each
 
 The ultimate output is a completed checklist mapping each methodology requirement to extracted evidence, validation status, and reviewer determination—ready for registry submission.
 
-![Placeholder: Eight-Stage Workflow Diagram]
+![Placeholder: Eight-Stage Workflow Diagram](../../images/week_4/stages.png)
 *Each stage produces verifiable artifacts before the system proceeds, creating accountability without rigidity.*
 
 ---
@@ -79,7 +81,7 @@ The Registry Agent Review Checklist translates these methodology requirements in
 
 The Core Carbon Principles established by the Integrity Council for the Voluntary Carbon Market now define the global benchmark: emission reductions must be real, measurable, additional, permanent, independently verified, conservatively estimated, uniquely numbered, and transparently listed [^11]. Each of these qualities requires specific methodological provisions that projects must demonstrate. The Registry Assistant automates the grammatical parsing—the mechanical work of identifying which documents address which requirements—while preserving human judgment for interpretation.
 
-![Placeholder: Checklist Matrix View]
+![Placeholder: Checklist Matrix View](../../images/week_4/screenshots/mapping.png)
 *The requirement mapping matrix shows which documents address which checklist items, with confidence scores indicating match quality.*
 
 ---
@@ -104,7 +106,7 @@ Research from human-AI collaboration suggests that process design matters more t
 
 Companies deploying AI carbon tracking systems report 300-400% annual ROI through reduced labor costs, eliminated errors, and faster credit monetization [^14]. The global carbon credit verification market is projected to grow from $226 million in 2024 to $884 million by 2030 at a CAGR of 25.5% [^15]. The traditional verification infrastructure can meet this demand when AI amplifies existing expertise.
 
-![Placeholder: Economic Impact Visualization]
+![Placeholder: Economic Impact Visualization](../../images/week_4/becca_working.png)
 *The verification flywheel: reduced review time enables increased throughput, which generates more credits, attracting more projects.*
 
 ---
