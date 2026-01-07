@@ -10,7 +10,7 @@
         body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
         #map { position: absolute; top: 0; bottom: 0; width: 100%; }
         .emoji-marker {
-            font-size: 28px;
+            font-size: 32px;
             text-align: center;
             line-height: 1;
             opacity: 0.9;
@@ -29,16 +29,16 @@
         }
         .popup-title {
             font-weight: bold;
-            font-size: 16px;
+            font-size: 17px;
             margin-bottom: 5px;
             color: #1a5f2a;
         }
         .popup-class {
-            font-size: 14px;
+            font-size: 15px;
             color: #666;
         }
         .popup-jurisdiction {
-            font-size: 13px;
+            font-size: 14px;
             color: #888;
             margin-top: 3px;
         }
@@ -47,27 +47,27 @@
             bottom: 30px;
             left: 10px;
             background: white;
-            padding: 15px;
+            padding: 18px;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            font-size: 14px;
-            max-width: 260px;
+            font-size: 17px;
+            max-width: 340px;
             z-index: 1000;
         }
         .legend h4 {
-            margin: 0 0 10px 0;
-            font-size: 16px;
+            margin: 0 0 12px 0;
+            font-size: 21px;
             color: #1a5f2a;
         }
         .legend-item {
             display: flex;
             align-items: center;
-            margin: 6px 0;
+            margin: 8px 0;
         }
         .legend-emoji {
-            width: 28px;
-            margin-right: 10px;
-            font-size: 18px;
+            width: 32px;
+            margin-right: 12px;
+            font-size: 23px;
         }
         .stats {
             position: absolute;
@@ -80,36 +80,42 @@
             z-index: 1000;
         }
         .stats h3 {
-            margin: 0 0 5px 0;
+            margin: 0 0 8px 0;
             color: #1a5f2a;
-            font-size: 20px;
+            font-size: 27px;
         }
         .stats p {
             margin: 0;
             color: #666;
-            font-size: 15px;
+            font-size: 19px;
+        }
+        .stats .small {
+            font-size: 15px !important;
+            color: #888;
+            margin-top: 8px;
         }
         .style-selector {
             position: absolute;
             top: 10px;
             right: 10px;
             background: white;
-            padding: 12px 18px;
+            padding: 14px 20px;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
             z-index: 1000;
         }
         .style-selector label {
-            font-size: 14px;
-            color: #666;
+            font-size: 17px;
+            color: #555;
             display: block;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
+            font-weight: 500;
         }
         .style-selector select {
-            padding: 6px 12px;
+            padding: 8px 14px;
             border-radius: 4px;
             border: 1px solid #ccc;
-            font-size: 15px;
+            font-size: 17px;
             cursor: pointer;
         }
     </style>
@@ -119,7 +125,7 @@
 <div class="stats">
     <h3>🌍 Regen Network Projects</h3>
     <p>57 projects across 15 countries</p>
-    <p style="font-size: 11px; color: #999; margin-top: 5px;">Data from Regen Ledger (live)</p>
+    <p class="small">Data from Regen Ledger (live)</p>
 </div>
 <div class="style-selector">
     <label>Map Style</label>
@@ -147,11 +153,13 @@
 
 <script>
     // Initialize map centered on Atlantic for global view
-    // Fine-grained zoom: 0.25 increments instead of whole numbers
+    // Smooth continuous zoom with fine-grained wheel control
     const map = L.map('map', {
-        zoomSnap: 0.25,
-        zoomDelta: 0.25
-    }).setView([20, 0], 2);
+        zoomSnap: 0,
+        zoomDelta: 0.1,
+        wheelDebounceTime: 20,
+        wheelPxPerZoomLevel: 400
+    }).setView([25, 0], 2.5);
 
     // Tile layer definitions
     const tileLayers = {
@@ -290,15 +298,15 @@
         return L.divIcon({
             html: `<div class="emoji-marker">${emoji}</div>`,
             className: '',
-            iconSize: [34, 34],
-            iconAnchor: [17, 17],
-            popupAnchor: [0, -17]
+            iconSize: [38, 38],
+            iconAnchor: [19, 19],
+            popupAnchor: [0, -19]
         });
     }
 
     // Add markers with jittering for overlapping coordinates
     projects.forEach(project => {
-        const [jitteredLat, jitteredLng] = jitter(project.lat, project.lng, 1.5);
+        const [jitteredLat, jitteredLng] = jitter(project.lat, project.lng, 2.0);
         const marker = L.marker([jitteredLat, jitteredLng], {
             icon: createEmojiIcon(project.emoji)
         }).addTo(map);

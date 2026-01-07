@@ -29,7 +29,7 @@ In Ukraine, six or seven projects have emerged spontaneously on the Regen platfo
 
 Over a million credits have been issued across nine distinct credit classes on Regen Network, spanning carbon, biodiversity, grazing stewardship, and marine ecosystems. Native ecological assets with verifiable provenance, traceable to on-chain transactions that anyone can independently verify.
 
-![Placeholder: Global Project Map]
+![Global distribution of Regen Network projects](../../images/week_4/regen-registry.png)
 *Projects registered on Regen Network span multiple continents, from UK grasslands to Colombian habitat banks to Ecuadorian rainforests.*
 
 ---
