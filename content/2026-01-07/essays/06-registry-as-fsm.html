@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registry Review Agent: Eight-Stage State Machine</title>
+    <style>
+        :root {
+            --stage-1: #4a5568;
+            --stage-2: #2d3748;
+            --stage-3: #1a365d;
+            --stage-4: #234e52;
+            --stage-5: #22543d;
+            --stage-6: #744210;
+            --stage-7: #702459;
+            --stage-8: #553c9a;
+            --bg-color: #0f172a;
+            --text-color: #e2e8f0;
+            --accent: #60a5fa;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--accent);
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 1rem;
+            color: #94a3b8;
+            margin-bottom: 2rem;
+        }
+
+        .fsm-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .stages-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stage {
+            background: linear-gradient(135deg, var(--stage-bg) 0%, rgba(0,0,0,0.3) 100%);
+            border-radius: 12px;
+            padding: 1.25rem;
+            position: relative;
+            border: 2px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stage:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent);
+            box-shadow: 0 8px 32px rgba(96, 165, 250, 0.2);
+        }
+
+        .stage-number {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: var(--accent);
+            color: var(--bg-color);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .stage-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+            margin-bottom: 0.75rem;
+            color: white;
+        }
+
+        .stage-purpose {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+
+        .io-section {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .io-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+        }
+
+        .io-label {
+            font-weight: 600;
+            min-width: 45px;
+            color: #60a5fa;
+        }
+
+        .io-value {
+            color: #cbd5e1;
+        }
+
+        .stage-1 { --stage-bg: var(--stage-1); }
+        .stage-2 { --stage-bg: var(--stage-2); }
+        .stage-3 { --stage-bg: var(--stage-3); }
+        .stage-4 { --stage-bg: var(--stage-4); }
+        .stage-5 { --stage-bg: var(--stage-5); }
+        .stage-6 { --stage-bg: var(--stage-6); }
+        .stage-7 { --stage-bg: var(--stage-7); }
+        .stage-8 { --stage-bg: var(--stage-8); }
+
+        .transitions-section {
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .transitions-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .transition-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .legend-symbol {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .legend-proceed { background: var(--success); color: white; }
+        .legend-loop { background: var(--warning); color: white; }
+        .legend-escalate { background: #f59e0b; color: white; }
+        .legend-block { background: var(--error); color: white; }
+        .legend-pause { background: #6366f1; color: white; }
+
+        .happy-path {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            padding: 1rem;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 8px;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .path-stage {
+            background: rgba(96, 165, 250, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .path-arrow {
+            color: var(--success);
+            font-size: 1.2rem;
+        }
+
+        .mario-metaphor {
+            margin-top: 1.5rem;
+            padding: 1.25rem;
+            background: linear-gradient(135deg, rgba(139, 69, 19, 0.3) 0%, rgba(34, 84, 61, 0.3) 100%);
+            border-radius: 8px;
+            border: 1px solid rgba(139, 69, 19, 0.4);
+        }
+
+        .mario-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: #f59e0b;
+        }
+
+        .mario-text {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: #d4d4d8;
+        }
+
+        .mario-text em {
+            color: #fbbf24;
+            font-style: normal;
+        }
+
+        @media (max-width: 900px) {
+            .stages-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .stages-grid {
+                grid-template-columns: 1fr;
+            }
+
+            body {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="fsm-container">
+        <h1>Registry Review Agent: Eight-Stage State Machine</h1>
+        <p class="subtitle">A deterministic workflow for carbon credit verification</p>
+
+        <div class="stages-grid">
+            <div class="stage stage-1">
+                <div class="stage-number">1</div>
+                <div class="stage-title">Initialize</div>
+                <div class="stage-purpose">Establish review context and prepare workspace</div>
+                <div class="io-section">
+                    <div class="io-item">
+                        <span class="io-label">In:</span>
+                        <span class="io-value">Project name, files/links, checklist template</span>
+                    </div>
+                    <div class="io-item">
+                        <span class="io-label">Out:</span>
+                        <span class="io-value">Session ID, resource descriptors, status: Initialized</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stage stage-2">
+                <div class="stage-number">2</div>
+                <div class="stage-title">Document Discovery</div>
+                <div class="stage-purpose">Identify, normalize, and classify all documents</div>
+                <div class="io-section">
+                    <div class="io-item">
+                        <span class="io-label">In:</span>
+                        <span class="io-value">Configured folder/links, initialized session</span>
+                    </div>
+                    <div class="io-item">
+                        <span class="io-label">Out:</span>
+                        <span class="io-value">Document inventory with classifications</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stage stage-3">
+                <div class="stage-number">3</div>
+                <div class="stage-title">Requirement Mapping</div>
+                <div class="stage-purpose">Connect documents to checklist requirements</div>
+                <div class="io-section">
+                    <div class="io-item">
+                        <span class="io-label">In:</span>
+                        <span class="io-value">Document inventory, checklist template</span>
+                    </div>
+                    <div class="io-item">
+                        <span class="io-label">Out:</span>
+                        <span class="io-value">Mapping matrix with confidence scores</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stage stage-4">
+                <div class="stage-number">4</div>
+                <div class="stage-title">Evidence Extraction</div>
+                <div class="stage-purpose">Extract data points and text snippets</div>
+                <div class="io-section">
+                    <div class="io-item">
+                        <span class="io-label">In:</span>
+                        <span class="io-value">Mapped documents, requirement definitions</span>
+                    </div>
+                    <div class="io-item">
+                        <span class="io-label">Out:</span>
+                        <span class="io-value">Evidence snippets with page citations</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stage stage-5">
+                <div class="stage-number">5</div>
+                <div class="stage-title">Cross-Validation</div>
+                <div class="stage-purpose">Verify consistency and compliance across evidence</div>
+                <div class="io-section">
+                    <div class="io-item">
+                        <span class="io-label">In:</span>
+                        <span class="io-value">Extracted evidence, validation rules</span>
+                    </div>
+                    <div class="io-item">
+                        <span class="io-label">Out:</span>
+                        <span class="io-value">Coverage stats, validation flags</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stage stage-6">
+                <div class="stage-number">6</div>
+                <div class="stage-title">Report Generation</div>
+                <div class="stage-purpose">Produce structured, auditable review report</div>
+                <div class="io-section">
+                    <div class="io-item">
+                        <span class="io-label">In:</span>
+                        <span class="io-value">Validated evidence, session metadata</span>
+                    </div>
+                    <div class="io-item">
+                        <span class="io-label">Out:</span>
+                        <span class="io-value">JSON + Markdown reports with provenance</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stage stage-7">
+                <div class="stage-number">7</div>
+                <div class="stage-title">Human Review</div>
+                <div class="stage-purpose">Expert validation, annotation, and decision</div>
+                <div class="io-section">
+                    <div class="io-item">
+                        <span class="io-label">In:</span>
+                        <span class="io-value">Generated report, flagged items</span>
+                    </div>
+                    <div class="io-item">
+                        <span class="io-label">Out:</span>
+                        <span class="io-value">Annotated report, approval decision</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stage stage-8">
+                <div class="stage-number">8</div>
+                <div class="stage-title">Completion</div>
+                <div class="stage-purpose">Finalize and prepare for on-chain registration</div>
+                <div class="io-section">
+                    <div class="io-item">
+                        <span class="io-label">In:</span>
+                        <span class="io-value">Approved report, reviewer sign-off</span>
+                    </div>
+                    <div class="io-item">
+                        <span class="io-label">Out:</span>
+                        <span class="io-value">Locked report, audit trail, archive</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="transitions-section">
+            <div class="transitions-title">State Transition Rules</div>
+
+            <div class="transition-legend">
+                <div class="legend-item">
+                    <span class="legend-symbol legend-proceed">&#10003;</span>
+                    <span>Proceed to next stage</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-symbol legend-loop">&#8635;</span>
+                    <span>Loop back (re-run stage)</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-symbol legend-escalate">&#9888;</span>
+                    <span>Escalate/Branch to revision</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-symbol legend-block">&#10007;</span>
+                    <span>Block (missing requirements)</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-symbol legend-pause">&#10074;&#10074;</span>
+                    <span>Pause (on hold)</span>
+                </div>
+            </div>
+
+            <div class="happy-path">
+                <span class="path-stage">Initialize</span>
+                <span class="path-arrow">&#8594;</span>
+                <span class="path-stage">Discovery</span>
+                <span class="path-arrow">&#8594;</span>
+                <span class="path-stage">Mapping</span>
+                <span class="path-arrow">&#8594;</span>
+                <span class="path-stage">Extraction</span>
+                <span class="path-arrow">&#8594;</span>
+                <span class="path-stage">Validation</span>
+                <span class="path-arrow">&#8594;</span>
+                <span class="path-stage">Report</span>
+                <span class="path-arrow">&#8594;</span>
+                <span class="path-stage">Review</span>
+                <span class="path-arrow">&#8594;</span>
+                <span class="path-stage">Complete</span>
+            </div>
+
+            <div class="mario-metaphor">
+                <div class="mario-title">The Mario Metaphor</div>
+                <div class="mario-text">
+                    "Each review session progresses through eight carefully designed stages, a journey I likened to <em>playing Mario, trying to reach level eight</em>. You cannot skip from World 1-1 to World 8-4. You must progress through each level, accumulating power-ups and capabilities along the way. The linear progression is not a limitation; it is the fundamental architecture that makes the system reliable, auditable, and trustworthy."
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

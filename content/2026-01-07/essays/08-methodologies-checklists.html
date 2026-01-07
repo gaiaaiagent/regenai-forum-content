@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Methodology to Evidence Flow - Registry Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #0a1628 0%, #1a2a4a 50%, #0d1929 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #e0e6ed;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            background: linear-gradient(90deg, #4ade80, #22d3ee);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #8899aa;
+            margin-bottom: 48px;
+            font-size: 1.1rem;
+        }
+
+        .flow-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: stretch;
+            gap: 24px;
+            position: relative;
+        }
+
+        .flow-stage {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 24px;
+            position: relative;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .flow-stage:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-4px);
+        }
+
+        .stage-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            font-size: 24px;
+        }
+
+        .methodology .stage-icon {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        }
+
+        .checklist .stage-icon {
+            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+        }
+
+        .requirements .stage-icon {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        .evidence .stage-icon {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .stage-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+
+        .stage-description {
+            font-size: 0.9rem;
+            color: #8899aa;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .stage-items {
+            list-style: none;
+        }
+
+        .stage-items li {
+            font-size: 0.85rem;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border-left: 3px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .methodology .stage-items li {
+            border-left-color: #3b82f6;
+        }
+
+        .checklist .stage-items li {
+            border-left-color: #8b5cf6;
+        }
+
+        .requirements .stage-items li {
+            border-left-color: #f59e0b;
+        }
+
+        .evidence .stage-items li {
+            border-left-color: #10b981;
+        }
+
+        .stage-items li:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .arrow {
+            position: absolute;
+            top: 50%;
+            right: -24px;
+            transform: translateY(-50%);
+            width: 24px;
+            height: 24px;
+            z-index: 10;
+        }
+
+        .arrow svg {
+            fill: none;
+            stroke: #4ade80;
+            stroke-width: 2;
+        }
+
+        .flow-stage:last-child .arrow {
+            display: none;
+        }
+
+        .mapping-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .bottom-section {
+            margin-top: 48px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 24px;
+        }
+
+        .info-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-card h3::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: linear-gradient(180deg, #4ade80, #22d3ee);
+            border-radius: 2px;
+        }
+
+        .info-card p {
+            font-size: 0.9rem;
+            color: #8899aa;
+            line-height: 1.6;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 12px;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, #4ade80, #22d3ee);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #8899aa;
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .flow-legend {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            margin-top: 32px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: #8899aa;
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.blue { background: #3b82f6; }
+        .legend-dot.purple { background: #8b5cf6; }
+        .legend-dot.orange { background: #f59e0b; }
+        .legend-dot.green { background: #10b981; }
+
+        @media (max-width: 900px) {
+            .flow-container {
+                flex-direction: column;
+            }
+
+            .arrow {
+                right: auto;
+                left: 50%;
+                top: auto;
+                bottom: -24px;
+                transform: translateX(-50%) rotate(90deg);
+            }
+
+            .flow-stage {
+                margin-bottom: 24px;
+            }
+
+            .bottom-section {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>From Methodology to Verified Evidence</h1>
+        <p class="subtitle">How the Registry Assistant maps scientific requirements to documentary proof</p>
+
+        <div class="flow-container">
+            <div class="flow-stage methodology">
+                <div class="stage-icon">
+                    <span>&#128218;</span>
+                </div>
+                <h2 class="stage-title">Methodology</h2>
+                <p class="stage-description">Scientific specification that defines how carbon is measured and verified</p>
+                <ul class="stage-items">
+                    <li>Soil Organic Carbon Estimation v1.2.2</li>
+                    <li>CarbonPlus Grasslands v1.0</li>
+                    <li>GHG Benefits in Managed Crop Systems</li>
+                    <li>Sampling protocols and uncertainty</li>
+                </ul>
+                <div class="arrow">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M5 12h14M13 6l6 6-6 6"/>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="flow-stage checklist">
+                <div class="stage-icon">
+                    <span>&#9745;</span>
+                </div>
+                <h2 class="stage-title">Checklist</h2>
+                <p class="stage-description">Structured verification framework that translates methodology into categories</p>
+                <ul class="stage-items">
+                    <li>Land Tenure (Program Guide 8.2)</li>
+                    <li>Project Boundary (8.3, 8.4)</li>
+                    <li>GHG Accounting (Credit Class 5.x)</li>
+                    <li>Safeguards and Stakeholders (8.11)</li>
+                </ul>
+                <div class="arrow">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M5 12h14M13 6l6 6-6 6"/>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="flow-stage requirements">
+                <div class="stage-icon">
+                    <span>&#128203;</span>
+                </div>
+                <h2 class="stage-title">Requirements</h2>
+                <p class="stage-description">Specific criteria each project must satisfy with defined evidence types</p>
+                <ul class="stage-items">
+                    <li>23+ distinct requirement items</li>
+                    <li>Source section references</li>
+                    <li>Accepted evidence definitions</li>
+                    <li>Approval status tracking</li>
+                </ul>
+                <div class="arrow">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M5 12h14M13 6l6 6-6 6"/>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="flow-stage evidence">
+                <div class="stage-icon">
+                    <span>&#128196;</span>
+                </div>
+                <h2 class="stage-title">Evidence</h2>
+                <p class="stage-description">Submitted documents that the Registry Assistant maps to requirements</p>
+                <ul class="stage-items">
+                    <li>Title deeds and lease agreements</li>
+                    <li>GIS shapefiles and boundary maps</li>
+                    <li>Lab results and sampling reports</li>
+                    <li>Monitoring plans and assessments</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="flow-legend">
+            <div class="legend-item">
+                <div class="legend-dot blue"></div>
+                <span>Scientific Foundation</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot purple"></div>
+                <span>Verification Grammar</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot orange"></div>
+                <span>Specific Criteria</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot green"></div>
+                <span>Documentary Proof</span>
+            </div>
+        </div>
+
+        <div class="bottom-section">
+            <div class="info-card">
+                <h3>How the Registry Assistant Works</h3>
+                <p>The checklist structure enables automation by creating explicit mappings between requirement categories and evidence types. The AI performs initial document classification, extracts relevant passages, and cross-validates claims across documents. Human experts review structured evidence rather than hunting through unorganized files.</p>
+            </div>
+
+            <div class="info-card">
+                <h3>Time Savings by Stage</h3>
+                <div class="stats-grid">
+                    <div class="stat">
+                        <div class="stat-value">96%</div>
+                        <div class="stat-label">Document Org</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">91%</div>
+                        <div class="stat-label">Mapping</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">85%</div>
+                        <div class="stat-label">Validation</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-card" style="margin-top: 24px;">
+            <h3>Example Requirement Mapping</h3>
+            <p style="margin-bottom: 16px;">
+                <strong style="color: #f59e0b;">Requirement:</strong> "Provide evidence of legal land tenure and control over the project area for the crediting period"
+                <br><br>
+                <strong style="color: #8b5cf6;">Source:</strong> Program Guide Section 8.2; Credit Class Section 3.4, 3.5
+                <br><br>
+                <strong style="color: #10b981;">Accepted Evidence:</strong> Deeds, lease agreements, land use agreements, or legal attestations confirming long-term control and ownership
+                <br><br>
+                <strong style="color: #3b82f6;">AI Action:</strong> Scans uploaded documents for title deeds and ownership records, extracts property details, cross-validates against project plan claims
+            </p>
+        </div>
+    </div>
+</body>
+</html>

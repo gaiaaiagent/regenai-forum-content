@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registry Assistant Dual Architecture Diagram</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #e0e0e0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #4ade80;
+        }
+        .subtitle {
+            text-align: center;
+            color: #94a3b8;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+        .diagram {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .row {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .box {
+            background: linear-gradient(145deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+            border-radius: 12px;
+            padding: 20px 30px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            min-width: 180px;
+        }
+        .box:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        .platform {
+            background: linear-gradient(145deg, rgba(74, 222, 128, 0.15), rgba(74, 222, 128, 0.05));
+            border-color: rgba(74, 222, 128, 0.3);
+        }
+        .platform .icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        .platform .title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #4ade80;
+        }
+        .platform .protocol {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-top: 5px;
+        }
+        .bridge {
+            background: linear-gradient(145deg, rgba(251, 191, 36, 0.15), rgba(251, 191, 36, 0.05));
+            border-color: rgba(251, 191, 36, 0.3);
+            padding: 25px 40px;
+        }
+        .bridge .title {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: #fbbf24;
+        }
+        .bridge .subtitle {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            margin: 10px 0 0 0;
+        }
+        .core {
+            background: linear-gradient(145deg, rgba(99, 102, 241, 0.2), rgba(99, 102, 241, 0.05));
+            border-color: rgba(99, 102, 241, 0.4);
+            padding: 30px 50px;
+        }
+        .core .title {
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: #818cf8;
+        }
+        .core .subtitle {
+            font-size: 0.95rem;
+            color: #a5b4fc;
+            margin: 8px 0 0 0;
+        }
+        .arrows {
+            display: flex;
+            justify-content: center;
+            gap: 80px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .arrow-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .arrow {
+            width: 3px;
+            height: 40px;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.3), rgba(255,255,255,0.1));
+            position: relative;
+        }
+        .arrow::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 10px solid rgba(255,255,255,0.3);
+        }
+        .arrow-label {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin-top: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .arrow-bidirectional {
+            position: relative;
+        }
+        .arrow-bidirectional::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 10px solid rgba(255,255,255,0.3);
+        }
+        .tools-list {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+        .tool-tag {
+            background: rgba(99, 102, 241, 0.2);
+            color: #a5b4fc;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-family: 'Monaco', 'Menlo', monospace;
+        }
+        .section-label {
+            text-align: center;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #64748b;
+            margin-bottom: 20px;
+        }
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            margin: 30px 0;
+        }
+        .feature-row {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        .feature {
+            text-align: center;
+            max-width: 200px;
+        }
+        .feature-icon {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+        .feature-title {
+            font-weight: 600;
+            color: #e0e0e0;
+            font-size: 0.95rem;
+        }
+        .feature-desc {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-top: 5px;
+        }
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+        .legend-color.mcp {
+            background: linear-gradient(145deg, rgba(74, 222, 128, 0.4), rgba(74, 222, 128, 0.2));
+            border: 1px solid rgba(74, 222, 128, 0.5);
+        }
+        .legend-color.rest {
+            background: linear-gradient(145deg, rgba(251, 191, 36, 0.4), rgba(251, 191, 36, 0.2));
+            border: 1px solid rgba(251, 191, 36, 0.5);
+        }
+        .legend-color.core {
+            background: linear-gradient(145deg, rgba(99, 102, 241, 0.4), rgba(99, 102, 241, 0.2));
+            border: 1px solid rgba(99, 102, 241, 0.5);
+        }
+        .legend-text {
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+        @media (max-width: 768px) {
+            .row {
+                flex-direction: column;
+                align-items: center;
+            }
+            .arrows {
+                gap: 40px;
+            }
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Registry Assistant: Dual Architecture</h1>
+        <p class="subtitle">MCP for Claude / REST API for ChatGPT / Universal Access</p>
+
+        <div class="diagram">
+            <p class="section-label">AI Platforms</p>
+            <div class="row">
+                <div class="box platform">
+                    <div class="icon">C</div>
+                    <div class="title">Claude Code</div>
+                    <div class="protocol">MCP (stdio)</div>
+                </div>
+                <div class="box platform">
+                    <div class="icon">C</div>
+                    <div class="title">Claude Desktop</div>
+                    <div class="protocol">MCP (HTTP)</div>
+                </div>
+                <div class="box platform">
+                    <div class="icon">G</div>
+                    <div class="title">ChatGPT</div>
+                    <div class="protocol">Custom GPT Actions</div>
+                </div>
+                <div class="box platform">
+                    <div class="icon">E</div>
+                    <div class="title">Eliza Agent</div>
+                    <div class="protocol">MCP Client</div>
+                </div>
+            </div>
+
+            <div class="arrows">
+                <div class="arrow-group">
+                    <div class="arrow arrow-bidirectional"></div>
+                    <span class="arrow-label">JSON-RPC</span>
+                </div>
+                <div class="arrow-group">
+                    <div class="arrow arrow-bidirectional"></div>
+                    <span class="arrow-label">JSON-RPC</span>
+                </div>
+                <div class="arrow-group">
+                    <div class="arrow arrow-bidirectional"></div>
+                    <span class="arrow-label">REST/HTTP</span>
+                </div>
+                <div class="arrow-group">
+                    <div class="arrow arrow-bidirectional"></div>
+                    <span class="arrow-label">JSON-RPC</span>
+                </div>
+            </div>
+
+            <p class="section-label">Protocol Layer</p>
+            <div class="row">
+                <div class="box bridge" style="flex: 1; max-width: 400px;">
+                    <div class="title">MCP Server</div>
+                    <div class="subtitle">Model Context Protocol</div>
+                </div>
+                <div class="box bridge" style="flex: 1; max-width: 400px;">
+                    <div class="title">REST API (FastAPI)</div>
+                    <div class="subtitle">chatgpt_rest_api.py</div>
+                </div>
+            </div>
+
+            <div class="arrows">
+                <div class="arrow-group" style="width: 100%;">
+                    <div class="arrow arrow-bidirectional" style="height: 50px;"></div>
+                    <span class="arrow-label">Same Python Functions</span>
+                </div>
+            </div>
+
+            <p class="section-label">Core Logic</p>
+            <div class="row">
+                <div class="box core">
+                    <div class="title">Registry Review Tools</div>
+                    <div class="subtitle">session_tools / document_tools / evidence_tools</div>
+                </div>
+            </div>
+
+            <div class="tools-list">
+                <span class="tool-tag">create_session</span>
+                <span class="tool-tag">discover_documents</span>
+                <span class="tool-tag">map_requirements</span>
+                <span class="tool-tag">extract_evidence</span>
+                <span class="tool-tag">cross_validate</span>
+                <span class="tool-tag">generate_report</span>
+            </div>
+
+            <div class="divider"></div>
+
+            <p class="section-label">Key Architectural Features</p>
+            <div class="feature-row">
+                <div class="feature">
+                    <div class="feature-icon">1</div>
+                    <div class="feature-title">Single Source of Truth</div>
+                    <div class="feature-desc">All business logic lives in Python tools. Both protocols call the same functions.</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">2</div>
+                    <div class="feature-title">Two-Step Upload</div>
+                    <div class="feature-desc">ChatGPT users get browser-based file upload via /generate-upload-url pattern.</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">3</div>
+                    <div class="feature-title">Auto OpenAPI Schema</div>
+                    <div class="feature-desc">FastAPI generates OpenAPI spec at /docs for ChatGPT Action configuration.</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">4</div>
+                    <div class="feature-title">Platform Agnostic</div>
+                    <div class="feature-desc">Choose Claude, ChatGPT, or Eliza. Same workflow, same results, different UI.</div>
+                </div>
+            </div>
+
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color mcp"></div>
+                    <span class="legend-text">MCP Native (Claude, Eliza)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color rest"></div>
+                    <span class="legend-text">REST Bridge (ChatGPT)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color core"></div>
+                    <span class="legend-text">Shared Core Logic</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

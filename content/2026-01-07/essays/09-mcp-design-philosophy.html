@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCP Architecture: The Three Primitives</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #0a1628 0%, #1a2f4a 50%, #0d3b2d 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #e8f4f0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #7dd3c0;
+            text-shadow: 0 2px 20px rgba(125, 211, 192, 0.3);
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #a0c4b8;
+            margin-bottom: 50px;
+            font-style: italic;
+        }
+
+        .architecture-diagram {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        /* Client-Host Section */
+        .client-host-layer {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .client-box {
+            background: linear-gradient(145deg, #1e3a5f 0%, #162d4a 100%);
+            border: 2px solid #3d7a9e;
+            border-radius: 16px;
+            padding: 25px 35px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .client-box h3 {
+            color: #7dc3eb;
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+        }
+
+        .client-box p {
+            color: #9abfdb;
+            font-size: 0.9rem;
+        }
+
+        /* Connection Lines */
+        .connection-layer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 80px;
+            position: relative;
+        }
+
+        .protocol-badge {
+            background: linear-gradient(145deg, #2d5a4a 0%, #1f4a3a 100%);
+            border: 2px solid #4a9a7a;
+            border-radius: 25px;
+            padding: 12px 30px;
+            font-weight: 600;
+            color: #7dd3c0;
+            font-size: 1rem;
+            box-shadow: 0 4px 20px rgba(74, 154, 122, 0.3);
+            position: relative;
+            z-index: 10;
+        }
+
+        .connection-line {
+            position: absolute;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, #3d7a9e, #4a9a7a);
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* MCP Server Section */
+        .server-layer {
+            background: linear-gradient(145deg, #0f2922 0%, #1a3d32 100%);
+            border: 3px solid #3a8a6a;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 12px 48px rgba(58, 138, 106, 0.2);
+        }
+
+        .server-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .server-header h2 {
+            color: #7dd3c0;
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        .server-header p {
+            color: #6ab89e;
+            font-size: 1rem;
+        }
+
+        /* The Three Primitives */
+        .primitives-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .primitive-card {
+            border-radius: 16px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .primitive-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
+        }
+
+        .primitive-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+
+        /* Resources */
+        .resources {
+            background: linear-gradient(145deg, #1a3d52 0%, #0f2a3d 100%);
+            border: 2px solid #4a8aaa;
+        }
+
+        .resources::before {
+            background: linear-gradient(90deg, #4a8aaa, #7ab8d8);
+        }
+
+        .resources .icon {
+            color: #7ab8d8;
+        }
+
+        /* Tools */
+        .tools {
+            background: linear-gradient(145deg, #3d3a1a 0%, #2a280f 100%);
+            border: 2px solid #aa9a4a;
+        }
+
+        .tools::before {
+            background: linear-gradient(90deg, #aa9a4a, #d8c87a);
+        }
+
+        .tools .icon {
+            color: #d8c87a;
+        }
+
+        /* Prompts */
+        .prompts {
+            background: linear-gradient(145deg, #2d1a3d 0%, #1f0f2a 100%);
+            border: 2px solid #8a4aaa;
+        }
+
+        .prompts::before {
+            background: linear-gradient(90deg, #8a4aaa, #b87ad8);
+        }
+
+        .prompts .icon {
+            color: #b87ad8;
+        }
+
+        .primitive-card .icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .primitive-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 12px;
+            color: #e8f4f0;
+        }
+
+        .primitive-card .description {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #b8d4c8;
+            margin-bottom: 20px;
+        }
+
+        .primitive-card .examples {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .primitive-card .examples h4 {
+            font-size: 0.85rem;
+            color: #8ab8a0;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .primitive-card .examples ul {
+            list-style: none;
+        }
+
+        .primitive-card .examples li {
+            font-size: 0.9rem;
+            color: #a0c4b8;
+            padding: 4px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .primitive-card .examples li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .resources .examples li::before {
+            background: #4a8aaa;
+        }
+
+        .tools .examples li::before {
+            background: #aa9a4a;
+        }
+
+        .prompts .examples li::before {
+            background: #8a4aaa;
+        }
+
+        /* Hierarchy Section */
+        .hierarchy-section {
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        .hierarchy-section h2 {
+            color: #7dd3c0;
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+        }
+
+        .hierarchy-diagram {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 20px;
+            height: 200px;
+        }
+
+        .hierarchy-bar {
+            width: 120px;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            padding-bottom: 15px;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .hierarchy-bar:hover {
+            transform: scale(1.05);
+        }
+
+        .hierarchy-bar span {
+            font-weight: 600;
+            font-size: 0.9rem;
+            writing-mode: horizontal-tb;
+        }
+
+        .hierarchy-bar.resources-bar {
+            height: 80px;
+            background: linear-gradient(145deg, #4a8aaa 0%, #2a5a7a 100%);
+            border: 2px solid #7ab8d8;
+            border-bottom: none;
+        }
+
+        .hierarchy-bar.tools-bar {
+            height: 130px;
+            background: linear-gradient(145deg, #aa9a4a 0%, #7a6a2a 100%);
+            border: 2px solid #d8c87a;
+            border-bottom: none;
+        }
+
+        .hierarchy-bar.prompts-bar {
+            height: 180px;
+            background: linear-gradient(145deg, #8a4aaa 0%, #5a2a7a 100%);
+            border: 2px solid #b87ad8;
+            border-bottom: none;
+        }
+
+        .hierarchy-label {
+            position: absolute;
+            bottom: -30px;
+            font-size: 0.85rem;
+            color: #8ab8a0;
+        }
+
+        /* Mycelium Metaphor */
+        .metaphor-section {
+            margin-top: 60px;
+            background: linear-gradient(145deg, #0a1a15 0%, #152a22 100%);
+            border: 2px solid #2a5a4a;
+            border-radius: 20px;
+            padding: 35px;
+            text-align: center;
+        }
+
+        .metaphor-section h2 {
+            color: #7dd3c0;
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+        }
+
+        .metaphor-section p {
+            color: #a0c4b8;
+            font-size: 1.05rem;
+            line-height: 1.8;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .metaphor-section .highlight {
+            color: #7dd3c0;
+            font-weight: 600;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            color: #6a8a7a;
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: #7dd3c0;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .primitives-container {
+                grid-template-columns: 1fr;
+            }
+
+            .hierarchy-diagram {
+                gap: 15px;
+            }
+
+            .hierarchy-bar {
+                width: 90px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Model Context Protocol Architecture</h1>
+        <p class="subtitle">The connective tissue enabling planetary-scale AI intelligence</p>
+
+        <div class="architecture-diagram">
+            <!-- Client Layer -->
+            <div class="client-host-layer">
+                <div class="client-box">
+                    <h3>AI Application</h3>
+                    <p>Claude Code, Claude Desktop, or any MCP client</p>
+                </div>
+            </div>
+
+            <!-- Connection -->
+            <div class="connection-layer">
+                <div class="connection-line"></div>
+                <div class="protocol-badge">JSON-RPC over MCP</div>
+            </div>
+
+            <!-- MCP Server Layer -->
+            <div class="server-layer">
+                <div class="server-header">
+                    <h2>MCP Server</h2>
+                    <p>Exposes capabilities through three universal primitives</p>
+                </div>
+
+                <div class="primitives-container">
+                    <!-- Resources -->
+                    <div class="primitive-card resources">
+                        <div class="icon">&#128218;</div>
+                        <h3>Resources</h3>
+                        <p class="description">
+                            <strong>The Data Layer.</strong> Resources expose information that AI systems can read and use as context. They are application-controlled, meaning the client explicitly requests and manages access.
+                        </p>
+                        <div class="examples">
+                            <h4>Examples</h4>
+                            <ul>
+                                <li>File contents and documents</li>
+                                <li>Database records</li>
+                                <li>Configuration values</li>
+                                <li>Session state</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Tools -->
+                    <div class="primitive-card tools">
+                        <div class="icon">&#128295;</div>
+                        <h3>Tools</h3>
+                        <p class="description">
+                            <strong>The Action Layer.</strong> Tools are executable functions that AI can invoke to perform actions. They are model-controlled, meaning the AI decides when to call them based on user intent.
+                        </p>
+                        <div class="examples">
+                            <h4>Examples</h4>
+                            <ul>
+                                <li>Load and analyze datasets</li>
+                                <li>Execute API calls</li>
+                                <li>Modify system state</li>
+                                <li>Generate visualizations</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Prompts -->
+                    <div class="primitive-card prompts">
+                        <div class="icon">&#10024;</div>
+                        <h3>Prompts</h3>
+                        <p class="description">
+                            <strong>The Orchestration Layer.</strong> Prompts are reusable templates that compose tools into workflows. They encode expertise and guide AI through complex multi-step processes.
+                        </p>
+                        <div class="examples">
+                            <h4>Examples</h4>
+                            <ul>
+                                <li>Guided review workflows</li>
+                                <li>Analysis pipelines</li>
+                                <li>Discovery sequences</li>
+                                <li>Best-practice patterns</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hierarchy Section -->
+        <div class="hierarchy-section">
+            <h2>The Hierarchy of Capability</h2>
+            <div class="hierarchy-diagram">
+                <div class="hierarchy-bar resources-bar">
+                    <span>Data</span>
+                    <div class="hierarchy-label">Resources</div>
+                </div>
+                <div class="hierarchy-bar tools-bar">
+                    <span>Actions</span>
+                    <div class="hierarchy-label">Tools</div>
+                </div>
+                <div class="hierarchy-bar prompts-bar">
+                    <span>Workflows</span>
+                    <div class="hierarchy-label">Prompts</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mycelium Metaphor -->
+        <div class="metaphor-section">
+            <h2>The Mycelial Network Metaphor</h2>
+            <p>
+                Just as <span class="highlight">mycorrhizal networks</span> beneath a forest floor connect trees
+                without central coordination, MCP enables any AI system to connect to any data source or tool
+                through a universal protocol. Each server maintains <span class="highlight">autonomy</span> over
+                its own capabilities while becoming transparently available to others. The result:
+                <span class="highlight">emergent intelligence</span> at planetary scale, where the whole
+                becomes greater than the sum of its parts.
+            </p>
+        </div>
+
+        <div class="footer">
+            <p>RegenAI Week 4 | <a href="https://modelcontextprotocol.io">Model Context Protocol</a></p>
+        </div>
+    </div>
+</body>
+</html>

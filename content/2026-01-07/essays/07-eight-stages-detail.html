@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registry Review Agent: Eight-Stage Workflow</title>
+    <style>
+        :root {
+            --stage-1: #4A90A4;
+            --stage-2: #5BA88F;
+            --stage-3: #7CB86F;
+            --stage-4: #A8C256;
+            --stage-5: #D4B44A;
+            --stage-6: #E89F3C;
+            --stage-7: #E87B4A;
+            --stage-8: #D45A5A;
+            --bg-primary: #1a1f2e;
+            --bg-secondary: #242a3d;
+            --bg-tertiary: #2d3548;
+            --text-primary: #e8ecf3;
+            --text-secondary: #a0aec0;
+            --border-color: #3d4660;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 12px;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .workflow-container {
+            position: relative;
+            padding: 40px 0;
+        }
+
+        /* Central Flow Line */
+        .flow-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(
+                to bottom,
+                var(--stage-1) 0%,
+                var(--stage-2) 12.5%,
+                var(--stage-3) 25%,
+                var(--stage-4) 37.5%,
+                var(--stage-5) 50%,
+                var(--stage-6) 62.5%,
+                var(--stage-7) 75%,
+                var(--stage-8) 100%
+            );
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        .stage {
+            display: flex;
+            align-items: stretch;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .stage:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .stage-content {
+            flex: 1;
+            max-width: 46%;
+        }
+
+        .stage-node {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: white;
+            z-index: 10;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .stage-card {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .stage-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+        }
+
+        .stage-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .stage-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .stage-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .stage-metaphor {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-bottom: 16px;
+            padding-left: 44px;
+        }
+
+        .activities {
+            display: grid;
+            gap: 12px;
+        }
+
+        .activity-group {
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+            padding: 14px;
+        }
+
+        .activity-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .activity-list {
+            list-style: none;
+        }
+
+        .activity-list li {
+            font-size: 0.85rem;
+            padding: 4px 0;
+            padding-left: 16px;
+            position: relative;
+            color: var(--text-primary);
+        }
+
+        .activity-list li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+
+        .agent-activities li::before { background: #6B8DD6; }
+        .human-activities li::before { background: #7CB86F; }
+        .output-activities li::before { background: #D4B44A; }
+
+        .stage-spacer {
+            flex: 0 0 8%;
+        }
+
+        /* Stage Colors */
+        .stage-1 .stage-node, .stage-1 .stage-number { background: var(--stage-1); }
+        .stage-2 .stage-node, .stage-2 .stage-number { background: var(--stage-2); }
+        .stage-3 .stage-node, .stage-3 .stage-number { background: var(--stage-3); }
+        .stage-4 .stage-node, .stage-4 .stage-number { background: var(--stage-4); }
+        .stage-5 .stage-node, .stage-5 .stage-number { background: var(--stage-5); }
+        .stage-6 .stage-node, .stage-6 .stage-number { background: var(--stage-6); }
+        .stage-7 .stage-node, .stage-7 .stage-number { background: var(--stage-7); }
+        .stage-8 .stage-node, .stage-8 .stage-number { background: var(--stage-8); }
+
+        .stage-1 .stage-card { border-left: 4px solid var(--stage-1); }
+        .stage-2 .stage-card { border-left: 4px solid var(--stage-2); }
+        .stage-3 .stage-card { border-left: 4px solid var(--stage-3); }
+        .stage-4 .stage-card { border-left: 4px solid var(--stage-4); }
+        .stage-5 .stage-card { border-left: 4px solid var(--stage-5); }
+        .stage-6 .stage-card { border-left: 4px solid var(--stage-6); }
+        .stage-7 .stage-card { border-left: 4px solid var(--stage-7); }
+        .stage-8 .stage-card { border-left: 4px solid var(--stage-8); }
+
+        .stage:nth-child(even) .stage-card {
+            border-left: none;
+        }
+        .stage-2 .stage-card { border-right: 4px solid var(--stage-2); }
+        .stage-4 .stage-card { border-right: 4px solid var(--stage-4); }
+        .stage-6 .stage-card { border-right: 4px solid var(--stage-6); }
+        .stage-8 .stage-card { border-right: 4px solid var(--stage-8); }
+
+        /* Legend */
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 60px;
+            padding: 24px;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.agent { background: #6B8DD6; }
+        .legend-dot.human { background: #7CB86F; }
+        .legend-dot.output { background: #D4B44A; }
+
+        /* Success Metrics Footer */
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .metric-card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--stage-3), var(--stage-5));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .metric-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+
+        @media (max-width: 900px) {
+            .stage {
+                flex-direction: column !important;
+                align-items: center;
+            }
+
+            .stage-content {
+                max-width: 100%;
+            }
+
+            .stage-spacer {
+                display: none;
+            }
+
+            .flow-line {
+                display: none;
+            }
+
+            .stage-node {
+                position: relative;
+                left: auto;
+                top: auto;
+                transform: none;
+                margin-bottom: 16px;
+            }
+
+            .stage-card {
+                border-left: 4px solid !important;
+                border-right: none !important;
+            }
+
+            .metrics {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Registry Review Agent: Eight-Stage Workflow</h1>
+            <p class="subtitle">A collaborative process where AI handles the tedious and humans bring the expertise. Like digestion: intake, breakdown, synthesis, validation, and finally transformation into knowledge that nourishes the ecosystem.</p>
+        </header>
+
+        <div class="workflow-container">
+            <div class="flow-line"></div>
+
+            <!-- Stage 1: Initialize -->
+            <div class="stage stage-1">
+                <div class="stage-content">
+                    <div class="stage-card">
+                        <div class="stage-header">
+                            <div class="stage-number">1</div>
+                            <div class="stage-title">Initialize</div>
+                        </div>
+                        <div class="stage-metaphor">The Intake Breath - receiving and preparing</div>
+                        <div class="activities">
+                            <div class="activity-group agent-activities">
+                                <div class="activity-label">Agent Actions</div>
+                                <ul class="activity-list">
+                                    <li>Create unique review session ID</li>
+                                    <li>Accept uploaded files or folder links</li>
+                                    <li>Load checklist template for methodology</li>
+                                    <li>Generate Resource Descriptors with checksums</li>
+                                </ul>
+                            </div>
+                            <div class="activity-group human-activities">
+                                <div class="activity-label">Human Actions</div>
+                                <ul class="activity-list">
+                                    <li>Select project and checklist template</li>
+                                    <li>Choose data source mode (Mirror/Reference)</li>
+                                    <li>Confirm session creation</li>
+                                </ul>
+                            </div>
+                            <div class="activity-group output-activities">
+                                <div class="activity-label">Output</div>
+                                <ul class="activity-list">
+                                    <li>Session metadata record</li>
+                                    <li>Resource Descriptors with IRIs</li>
+                                    <li>Status: Initialized</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="stage-spacer"></div>
+                <div class="stage-node">1</div>
+                <div class="stage-spacer"></div>
+                <div class="stage-content"></div>
+            </div>
+
+            <!-- Stage 2: Document Discovery -->
+            <div class="stage stage-2">
+                <div class="stage-content">
+                    <div class="stage-card">
+                        <div class="stage-header">
+                            <div class="stage-number">2</div>
+                            <div class="stage-title">Document Discovery</div>
+                        </div>
+                        <div class="stage-metaphor">Sensing the Landscape - exploring what exists</div>
+                        <div class="activities">
+                            <div class="activity-group agent-activities">
+                                <div class="activity-label">Agent Actions</div>
+                                <ul class="activity-list">
+                                    <li>Scan folders and extract file metadata</li>
+                                    <li>Normalize file names for clarity</li>
+                                    <li>Classify by type: reports, legal, GIS, data</li>
+                                    <li>Generate inventory with confidence scores</li>
+                                </ul>
+                            </div>
+                            <div class="activity-group human-activities">
+                                <div class="activity-label">Human Actions</div>
+                                <ul class="activity-list">
+                                    <li>Review document inventory</li>
+                                    <li>Mark as In Scope, Ignored, or Pinned</li>
+                                    <li>Correct misclassifications</li>
+                                </ul>
+                            </div>
+                            <div class="activity-group output-activities">
+                                <div class="activity-label">Output</div>
+                                <ul class="activity-list">
+                                    <li>Document inventory table</li>
+                                    <li>Classification accuracy: >85%</li>
+                                    <li>Status: Documents Discovered</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="stage-spacer"></div>
+                <div class="stage-node">2</div>
+                <div class="stage-spacer"></div>
+                <div class="stage-content"></div>
+            </div>
+
+            <!-- Stage 3: Requirement Mapping -->
+            <div class="stage stage-3">
+                <div class="stage-content">
+                    <div class="stage-card">
+                        <div class="stage-header">
+                            <div class="stage-number">3</div>
+                            <div class="stage-title">Requirement Mapping</div>
+                        </div>
+                        <div class="stage-metaphor">Building Correspondence - connecting needs to evidence</div>
+                        <div class="activities">
+                            <div class="activity-group agent-activities">
+                                <div class="activity-label">Agent Actions</div>
+                                <ul class="activity-list">
+                                    <li>Parse checklist into structured requirements</li>
+                                    <li>Analyze documents with semantic matching</li>
+                                    <li>Suggest document-to-requirement mappings</li>
+                                    <li>Flag unmapped requirements</li>
+                                </ul>
+                            </div>
+                            <div class="activity-group human-activities">
+                                <div class="activity-label">Human Actions</div>
+                                <ul class="activity-list">
+                                    <li>Review mapping matrix</li>
+                                    <li>Confirm, remove, or add mappings</li>
+                                    <li>Prioritize unmapped requirements</li>
+                                </ul>
+                            </div>
+                            <div class="activity-group output-activities">
+                                <div class="activity-label">Output</div>
+                                <ul class="activity-list">
+                                    <li>Requirement mapping matrix</li>
+                                    <li>Mapping accuracy: >90%</li>
+                                    <li>Status: Requirements Mapped</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="stage-spacer"></div>
+                <div class="stage-node">3</div>
+                <div class="stage-spacer"></div>
+                <div class="stage-content"></div>
+            </div>
+
+            <!-- Stage 4: Evidence Extraction -->
+            <div class="stage stage-4">
+                <div class="stage-content">
+                    <div class="stage-card">
+                        <div class="stage-header">
+                            <div class="stage-number">4</div>
+                            <div class="stage-title">Evidence Extraction</div>
+                        </div>
+                        <div class="stage-metaphor">The Digestion Process - breaking down into nutrients</div>
+                        <div class="activities">
+                            <div class="activity-group agent-activities">
+                                <div class="activity-label">Agent Actions</div>
+                                <ul class="activity-list">
+                                    <li>Parse documents: PDF text, tables, metadata</li>
+                                    <li>Extract 0-3 evidence snippets per requirement</li>
+                                    <li>Extract structured data: dates, locations, values</li>
+                                    <li>Generate citations with page/section</li>
+                                </ul>
+                            </div>
+                            <div class="activity-group human-activities">
+                                <div class="activity-label">Human Actions</div>
+                                <ul class="activity-list">
+                                    <li>Review snippets in collapsible panels</li>
+                                    <li>Delete irrelevant, add manual notes</li>
+                                    <li>Request re-extraction if needed</li>
+                                </ul>
+                            </div>
+                            <div class="activity-group output-activities">
+                                <div class="activity-label">Output</div>
+                                <ul class="activity-list">
+                                    <li>Evidence database with citations</li>
+                                    <li>Coverage rate: >85%</li>
+                                    <li>Status: Evidence Extracted</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="stage-spacer"></div>
+                <div class="stage-node">4</div>
+                <div class="stage-spacer"></div>
+                <div class="stage-content"></div>
+            </div>
+
+            <!-- Stage 5: Cross-Validation -->
+            <div class="stage stage-5">
+                <div class="stage-content">
+                    <div class="stage-card">
+                        <div class="stage-header">
+                            <div class="stage-number">5</div>
+                            <div class="stage-title">Cross-Validation</div>
+                        </div>
+                        <div class="stage-metaphor">The Immune System - detecting inconsistencies</div>
+                        <div class="activities">
+                            <div class="activity-group agent-activities">
+                                <div class="activity-label">Agent Actions</div>
+                                <ul class="activity-list">
+                                    <li>Completeness: verify coverage status</li>
+                                    <li>Consistency: cross-check dates, names, IDs</li>
+                                    <li>Compliance: validate protocol requirements</li>
+                                    <li>Generate Info/Warning/Error flags</li>
+                                </ul>
+                            </div>
+                            <div class="activity-group human-activities">
+                                <div class="activity-label">Human Actions</div>
+                                <ul class="activity-list">
+                                    <li>Review coverage summary</li>
+                                    <li>Override assessments with expert judgment</li>
+                                    <li>Add contextual notes for gray areas</li>
+                                </ul>
+                            </div>
+                            <div class="activity-group output-activities">
+                                <div class="activity-label">Output</div>
+                                <ul class="activity-list">
+                                    <li>Validation results per requirement</li>
+                                    <li>False positive rate: <5%</li>
+                                    <li>Status: Cross-Validated</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="stage-spacer"></div>
+                <div class="stage-node">5</div>
+                <div class="stage-spacer"></div>
+                <div class="stage-content"></div>
+            </div>
+
+            <!-- Stage 6: Report Generation -->
+            <div class="stage stage-6">
+                <div class="stage-content">
+                    <div class="stage-card">
+                        <div class="stage-header">
+                            <div class="stage-number">6</div>
+                            <div class="stage-title">Report Generation</div>
+                        </div>
+                        <div class="stage-metaphor">The Synthesis - crystallizing into artifact</div>
+                        <div class="activities">
+                            <div class="activity-group agent-activities">
+                                <div class="activity-label">Agent Actions</div>
+                                <ul class="activity-list">
+                                    <li>Compile findings into structured report</li>
+                                    <li>Generate JSON + human-readable formats</li>
+                                    <li>Include executive summary, per-req entries</li>
+                                    <li>Add provenance and appendices</li>
+                                </ul>
+                            </div>
+                            <div class="activity-group human-activities">
+                                <div class="activity-label">Human Actions</div>
+                                <ul class="activity-list">
+                                    <li>Review for completeness and clarity</li>
+                                    <li>Request regeneration if needed</li>
+                                    <li>Export in preferred format</li>
+                                </ul>
+                            </div>
+                            <div class="activity-group output-activities">
+                                <div class="activity-label">Output</div>
+                                <ul class="activity-list">
+                                    <li>Registry Review Report (JSON + PDF)</li>
+                                    <li>Citation completeness: 100%</li>
+                                    <li>Status: Report Generated</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="stage-spacer"></div>
+                <div class="stage-node">6</div>
+                <div class="stage-spacer"></div>
+                <div class="stage-content"></div>
+            </div>
+
+            <!-- Stage 7: Human Review -->
+            <div class="stage stage-7">
+                <div class="stage-content">
+                    <div class="stage-card">
+                        <div class="stage-header">
+                            <div class="stage-number">7</div>
+                            <div class="stage-title">Human Review</div>
+                        </div>
+                        <div class="stage-metaphor">The Expert Eye - judgment and decision</div>
+                        <div class="activities">
+                            <div class="activity-group agent-activities">
+                                <div class="activity-label">Agent Actions</div>
+                                <ul class="activity-list">
+                                    <li>Present report in editable interface</li>
+                                    <li>Track all edits with timestamps</li>
+                                    <li>Support revision workflows</li>
+                                    <li>Maintain complete change log</li>
+                                </ul>
+                            </div>
+                            <div class="activity-group human-activities">
+                                <div class="activity-label">Human Actions</div>
+                                <ul class="activity-list">
+                                    <li>Edit narrative, override assessments</li>
+                                    <li>Request proponent revisions</li>
+                                    <li>Make final determination:</li>
+                                    <li>Approve / Conditional / Reject / Hold</li>
+                                </ul>
+                            </div>
+                            <div class="activity-group output-activities">
+                                <div class="activity-label">Output</div>
+                                <ul class="activity-list">
+                                    <li>Finalized report with annotations</li>
+                                    <li>Complete audit trail</li>
+                                    <li>Status: Human Review Complete</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="stage-spacer"></div>
+                <div class="stage-node">7</div>
+                <div class="stage-spacer"></div>
+                <div class="stage-content"></div>
+            </div>
+
+            <!-- Stage 8: Completion -->
+            <div class="stage stage-8">
+                <div class="stage-content">
+                    <div class="stage-card">
+                        <div class="stage-header">
+                            <div class="stage-number">8</div>
+                            <div class="stage-title">Completion</div>
+                        </div>
+                        <div class="stage-metaphor">The Exhalation - finalizing and archiving</div>
+                        <div class="activities">
+                            <div class="activity-group agent-activities">
+                                <div class="activity-label">Agent Actions</div>
+                                <ul class="activity-list">
+                                    <li>Lock finalized report</li>
+                                    <li>Generate final package with checksums</li>
+                                    <li>Prepare on-chain registration data</li>
+                                    <li>Archive all session materials</li>
+                                </ul>
+                            </div>
+                            <div class="activity-group human-activities">
+                                <div class="activity-label">Human Actions</div>
+                                <ul class="activity-list">
+                                    <li>Final sign-off on review</li>
+                                    <li>Submit for on-chain registration</li>
+                                    <li>Communicate decision to proponent</li>
+                                    <li>Note lessons learned</li>
+                                </ul>
+                            </div>
+                            <div class="activity-group output-activities">
+                                <div class="activity-label">Output</div>
+                                <ul class="activity-list">
+                                    <li>Locked report + audit trail</li>
+                                    <li>On-chain registration data</li>
+                                    <li>Status: Completed</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="stage-spacer"></div>
+                <div class="stage-node">8</div>
+                <div class="stage-spacer"></div>
+                <div class="stage-content"></div>
+            </div>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-dot agent"></div>
+                <span>Agent Actions (Automated)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot human"></div>
+                <span>Human Actions (Expert Judgment)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot output"></div>
+                <span>Stage Output (Artifact)</span>
+            </div>
+        </div>
+
+        <div class="metrics">
+            <div class="metric-card">
+                <div class="metric-value">50-70%</div>
+                <div class="metric-label">Reduction in Manual Review Time</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value"><10%</div>
+                <div class="metric-label">Escalation Rate</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">95%+</div>
+                <div class="metric-label">Discovery Accuracy</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">100+</div>
+                <div class="metric-label">Annual Project Capacity</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

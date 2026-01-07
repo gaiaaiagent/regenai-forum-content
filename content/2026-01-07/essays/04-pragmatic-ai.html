@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Division of Labor: AI and Human in Registry Review</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #e8e8e8;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(90deg, #00d9ff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #8899aa;
+            margin-bottom: 50px;
+        }
+
+        .diagram-wrapper {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .column {
+            flex: 1;
+            min-width: 300px;
+            max-width: 400px;
+        }
+
+        .column-header {
+            text-align: center;
+            padding: 20px;
+            border-radius: 12px 12px 0 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .ai-header {
+            background: linear-gradient(135deg, #00d9ff 0%, #0099cc 100%);
+            color: #0a1628;
+        }
+
+        .human-header {
+            background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+            color: #0a1628;
+        }
+
+        .tasks-container {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0 0 12px 12px;
+            padding: 20px;
+            min-height: 500px;
+        }
+
+        .task {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 12px;
+            border-left: 4px solid;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .task:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .ai-task {
+            border-left-color: #00d9ff;
+        }
+
+        .human-task {
+            border-left-color: #00ff88;
+        }
+
+        .task-title {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 6px;
+        }
+
+        .task-desc {
+            font-size: 0.85rem;
+            color: #aabbcc;
+            line-height: 1.5;
+        }
+
+        .task-time {
+            display: inline-block;
+            margin-top: 8px;
+            font-size: 0.75rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 3px 10px;
+            border-radius: 12px;
+            color: #88aacc;
+        }
+
+        .center-column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-width: 120px;
+        }
+
+        .arrow-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .arrow {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .arrow-label {
+            font-size: 0.8rem;
+            color: #8899aa;
+            text-align: center;
+            max-width: 100px;
+        }
+
+        .stats-bar {
+            margin-top: 50px;
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 20px 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-ai {
+            background: linear-gradient(90deg, #00d9ff, #0099cc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-human {
+            background: linear-gradient(90deg, #00ff88, #00cc6a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-combined {
+            background: linear-gradient(90deg, #ff6b9d, #c44ce0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #8899aa;
+        }
+
+        .philosophy {
+            margin-top: 50px;
+            text-align: center;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .philosophy-quote {
+            font-size: 1.3rem;
+            font-style: italic;
+            color: #ccddee;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .philosophy-source {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #667788;
+        }
+
+        .workflow-stage {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 6px;
+        }
+
+        .stage-number {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #00d9ff 0%, #00ff88 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #0a1628;
+        }
+
+        .stage-name {
+            font-size: 0.85rem;
+            color: #aabbcc;
+        }
+
+        footer {
+            margin-top: 50px;
+            text-align: center;
+            color: #556677;
+            font-size: 0.85rem;
+        }
+
+        footer a {
+            color: #00d9ff;
+            text-decoration: none;
+        }
+
+        @media (max-width: 900px) {
+            .diagram-wrapper {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .center-column {
+                transform: rotate(90deg);
+                margin: 20px 0;
+            }
+
+            .arrow-label {
+                transform: rotate(-90deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>The Pragmatic AI Division of Labor</h1>
+        <p class="subtitle">Registry Review Workflow: AI handles the mechanical, humans handle the meaningful</p>
+
+        <div class="diagram-wrapper">
+            <div class="column">
+                <div class="column-header ai-header">AI Handles</div>
+                <div class="tasks-container">
+                    <div class="task ai-task">
+                        <div class="task-title">Document Discovery</div>
+                        <div class="task-desc">Scan directories, classify files by name patterns, infer document types from filenames</div>
+                        <span class="task-time">30 seconds</span>
+                    </div>
+                    <div class="task ai-task">
+                        <div class="task-title">PDF Text Extraction</div>
+                        <div class="task-desc">Convert scanned pages to searchable content, preserve structure and formatting</div>
+                        <span class="task-time">2-5 minutes</span>
+                    </div>
+                    <div class="task ai-task">
+                        <div class="task-title">Requirement Mapping</div>
+                        <div class="task-desc">Connect 60+ checklist items to documents using semantic matching algorithms</div>
+                        <span class="task-time">5-10 minutes</span>
+                    </div>
+                    <div class="task ai-task">
+                        <div class="task-title">Evidence Extraction</div>
+                        <div class="task-desc">Scan hundreds of pages to find specific passages proving compliance</div>
+                        <span class="task-time">15-30 minutes</span>
+                    </div>
+                    <div class="task ai-task">
+                        <div class="task-title">Cross-Validation</div>
+                        <div class="task-desc">Check date alignment, land tenure consistency, project ID matching across documents</div>
+                        <span class="task-time">5-10 minutes</span>
+                    </div>
+                    <div class="task ai-task">
+                        <div class="task-title">Report Generation</div>
+                        <div class="task-desc">Compile findings into structured Markdown and JSON reports with citations</div>
+                        <span class="task-time">10 seconds</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="center-column">
+                <div class="arrow-container">
+                    <div class="arrow">&#8594;</div>
+                    <div class="arrow-label">Flags items for review</div>
+                    <div class="arrow" style="margin-top: 30px;">&#8592;</div>
+                    <div class="arrow-label">Returns decisions</div>
+                </div>
+            </div>
+
+            <div class="column">
+                <div class="column-header human-header">Human Handles</div>
+                <div class="tasks-container">
+                    <div class="task human-task">
+                        <div class="task-title">Ambiguous Evidence Review</div>
+                        <div class="task-desc">When extracted evidence is unclear, apply domain expertise to interpret meaning</div>
+                        <span class="task-time">Judgment required</span>
+                    </div>
+                    <div class="task human-task">
+                        <div class="task-title">Discrepancy Resolution</div>
+                        <div class="task-desc">When cross-validation flags a mismatch, decide whether it matters contextually</div>
+                        <span class="task-time">Judgment required</span>
+                    </div>
+                    <div class="task human-task">
+                        <div class="task-title">Coherence Assessment</div>
+                        <div class="task-desc">Does the evidence chain tell a coherent story about actual regeneration?</div>
+                        <span class="task-time">Expertise required</span>
+                    </div>
+                    <div class="task human-task">
+                        <div class="task-title">Edge Case Decisions</div>
+                        <div class="task-desc">Handle novel situations, methodology exceptions, and contextual considerations</div>
+                        <span class="task-time">Expertise required</span>
+                    </div>
+                    <div class="task human-task">
+                        <div class="task-title">Final Approval</div>
+                        <div class="task-desc">Sign off on verification, taking responsibility for the decision</div>
+                        <span class="task-time">Responsibility required</span>
+                    </div>
+                    <div class="task human-task">
+                        <div class="task-title">Stakeholder Communication</div>
+                        <div class="task-desc">Explain decisions to project developers, address concerns, build relationships</div>
+                        <span class="task-time">Relationship required</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat">
+                <div class="stat-number stat-ai">80%</div>
+                <div class="stat-label">Time Savings</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number stat-human">100%</div>
+                <div class="stat-label">Human Decisions</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number stat-combined">60-90 min</div>
+                <div class="stat-label">vs. 6-8 hours</div>
+            </div>
+        </div>
+
+        <div class="philosophy">
+            <p class="philosophy-quote">
+                "The system does not replace Becca. It amplifies her. Think of it as a colleague who never sleeps, who can cross-reference thousands of documents in seconds, who catches the small inconsistencies that slip past tired human eyes. Becca still makes the decisions. The agent creates conditions for better decisions."
+            </p>
+            <p class="philosophy-source">- Registry Review MCP Design Philosophy</p>
+        </div>
+
+        <footer>
+            <p>RegenAI Week 4 - Pragmatic AI: Automating the Tedious</p>
+            <p style="margin-top: 10px;">
+                <a href="https://forum.regen.network">Regen Forum</a> |
+                <a href="https://github.com/gaiaaiagent">GitHub</a>
+            </p>
+        </footer>
+    </div>
+</body>
+</html>

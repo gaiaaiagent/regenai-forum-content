@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regen Scaling: The Bottleneck Resolution</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #0a1628 0%, #1a2744 50%, #0d1f3c 100%);
+            color: #e8f4f0;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #4ade80, #22d3ee, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 1.1rem;
+            margin-bottom: 50px;
+        }
+
+        .diagram-container {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 40px;
+        }
+
+        .diagram-title {
+            font-size: 1.4rem;
+            color: #22d3ee;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            margin-bottom: 30px;
+        }
+
+        svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .axis-label {
+            fill: #64748b;
+            font-size: 12px;
+        }
+
+        .axis-title {
+            fill: #94a3b8;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .grid-line {
+            stroke: rgba(255, 255, 255, 0.05);
+            stroke-width: 1;
+        }
+
+        .demand-curve {
+            fill: none;
+            stroke: url(#demandGradient);
+            stroke-width: 3;
+            stroke-linecap: round;
+        }
+
+        .capacity-manual {
+            fill: none;
+            stroke: #f87171;
+            stroke-width: 2.5;
+            stroke-dasharray: 8, 4;
+        }
+
+        .capacity-ai {
+            fill: none;
+            stroke: #4ade80;
+            stroke-width: 3;
+        }
+
+        .bottleneck-zone {
+            fill: url(#bottleneckGradient);
+            opacity: 0.4;
+        }
+
+        .milestone-dot {
+            fill: #22d3ee;
+            filter: drop-shadow(0 0 8px rgba(34, 211, 238, 0.6));
+        }
+
+        .milestone-label {
+            fill: #e2e8f0;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .legend-line {
+            width: 30px;
+            height: 3px;
+            border-radius: 2px;
+        }
+
+        .legend-demand {
+            background: linear-gradient(90deg, #22d3ee, #a78bfa);
+        }
+
+        .legend-manual {
+            background: #f87171;
+            border-style: dashed;
+        }
+
+        .legend-ai {
+            background: #4ade80;
+        }
+
+        .legend-text {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(34, 211, 238, 0.3);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .stat-number.green {
+            color: #4ade80;
+        }
+
+        .stat-number.cyan {
+            color: #22d3ee;
+        }
+
+        .stat-number.purple {
+            color: #a78bfa;
+        }
+
+        .stat-number.orange {
+            color: #fb923c;
+        }
+
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .timeline-section {
+            margin-top: 60px;
+        }
+
+        .timeline-title {
+            font-size: 1.4rem;
+            color: #22d3ee;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, #22d3ee, #4ade80, #a78bfa);
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            display: flex;
+            justify-content: flex-end;
+            padding-right: calc(50% + 30px);
+            position: relative;
+            margin-bottom: 40px;
+        }
+
+        .timeline-item:nth-child(even) {
+            justify-content: flex-start;
+            padding-right: 0;
+            padding-left: calc(50% + 30px);
+        }
+
+        .timeline-content {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 400px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .timeline-date {
+            color: #22d3ee;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .timeline-text {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 50%;
+            top: 20px;
+            width: 16px;
+            height: 16px;
+            background: #22d3ee;
+            border-radius: 50%;
+            transform: translateX(-50%);
+            border: 3px solid #0a1628;
+            box-shadow: 0 0 20px rgba(34, 211, 238, 0.5);
+        }
+
+        .quote-section {
+            margin-top: 60px;
+            text-align: center;
+            padding: 40px;
+            background: rgba(34, 211, 238, 0.05);
+            border-radius: 16px;
+            border: 1px solid rgba(34, 211, 238, 0.2);
+        }
+
+        .quote-text {
+            font-size: 1.3rem;
+            font-style: italic;
+            color: #e2e8f0;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto 20px;
+        }
+
+        .quote-attribution {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .timeline::before {
+                left: 20px;
+            }
+
+            .timeline-item,
+            .timeline-item:nth-child(even) {
+                padding-left: 50px;
+                padding-right: 0;
+                justify-content: flex-start;
+            }
+
+            .timeline-dot {
+                left: 20px;
+            }
+
+            .legend {
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>The Scaling Curve</h1>
+        <p class="subtitle">How AI resolves the verification bottleneck in regenerative carbon markets</p>
+
+        <div class="diagram-container">
+            <h2 class="diagram-title">Demand vs. Capacity: The Bottleneck Resolution</h2>
+
+            <div class="chart-wrapper">
+                <svg viewBox="0 0 800 400" preserveAspectRatio="xMidYMid meet">
+                    <defs>
+                        <linearGradient id="demandGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" style="stop-color:#22d3ee"/>
+                            <stop offset="100%" style="stop-color:#a78bfa"/>
+                        </linearGradient>
+                        <linearGradient id="bottleneckGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" style="stop-color:#f87171"/>
+                            <stop offset="100%" style="stop-color:transparent"/>
+                        </linearGradient>
+                    </defs>
+
+                    <!-- Grid lines -->
+                    <g class="grid">
+                        <line class="grid-line" x1="100" y1="50" x2="750" y2="50"/>
+                        <line class="grid-line" x1="100" y1="125" x2="750" y2="125"/>
+                        <line class="grid-line" x1="100" y1="200" x2="750" y2="200"/>
+                        <line class="grid-line" x1="100" y1="275" x2="750" y2="275"/>
+                        <line class="grid-line" x1="100" y1="350" x2="750" y2="350"/>
+                    </g>
+
+                    <!-- Axes -->
+                    <line x1="100" y1="350" x2="750" y2="350" stroke="#475569" stroke-width="2"/>
+                    <line x1="100" y1="50" x2="100" y2="350" stroke="#475569" stroke-width="2"/>
+
+                    <!-- Axis labels -->
+                    <text class="axis-title" x="425" y="390" text-anchor="middle">Time (2024 - 2027)</text>
+                    <text class="axis-title" x="40" y="200" text-anchor="middle" transform="rotate(-90, 40, 200)">Projects / Capacity</text>
+
+                    <!-- Time labels -->
+                    <text class="axis-label" x="150" y="370" text-anchor="middle">2024</text>
+                    <text class="axis-label" x="300" y="370" text-anchor="middle">2025</text>
+                    <text class="axis-label" x="450" y="370" text-anchor="middle">2026</text>
+                    <text class="axis-label" x="600" y="370" text-anchor="middle">2027</text>
+                    <text class="axis-label" x="700" y="370" text-anchor="middle">2028</text>
+
+                    <!-- Y-axis labels -->
+                    <text class="axis-label" x="90" y="350" text-anchor="end">0</text>
+                    <text class="axis-label" x="90" y="275" text-anchor="end">25</text>
+                    <text class="axis-label" x="90" y="200" text-anchor="end">50</text>
+                    <text class="axis-label" x="90" y="125" text-anchor="end">100</text>
+                    <text class="axis-label" x="90" y="55" text-anchor="end">150+</text>
+
+                    <!-- Bottleneck zone (gap between demand and manual capacity) -->
+                    <path class="bottleneck-zone" d="M300,280 Q400,200 500,120 L500,250 Q400,280 300,300 Z"/>
+
+                    <!-- Manual capacity curve (limited growth, plateaus) -->
+                    <path class="capacity-manual" d="M100,340 Q200,320 300,300 Q400,285 500,275 Q600,268 700,265"/>
+
+                    <!-- Demand curve (exponential growth) -->
+                    <path class="demand-curve" d="M100,330 Q200,310 300,280 Q400,200 500,120 Q600,70 700,50"/>
+
+                    <!-- AI-augmented capacity curve (matches demand growth) -->
+                    <path class="capacity-ai" d="M400,250 Q500,150 600,90 Q650,70 700,55"/>
+
+                    <!-- Key milestone markers -->
+                    <!-- Ecometric UK: 21 projects -->
+                    <circle class="milestone-dot" cx="350" cy="240" r="8"/>
+                    <text class="milestone-label" x="355" y="225" text-anchor="start">UK: 21 projects</text>
+
+                    <!-- Czech/Slovak: 111 farms -->
+                    <circle class="milestone-dot" cx="480" cy="140" r="8"/>
+                    <text class="milestone-label" x="485" y="125" text-anchor="start">111 farms</text>
+
+                    <!-- AI intervention point -->
+                    <circle cx="400" cy="250" r="12" fill="none" stroke="#4ade80" stroke-width="3"/>
+                    <text class="milestone-label" x="415" y="265" text-anchor="start" fill="#4ade80">AI Intervention</text>
+
+                    <!-- Annotations -->
+                    <text x="620" y="280" fill="#f87171" font-size="11" font-weight="500">Manual Capacity</text>
+                    <text x="620" y="295" fill="#f87171" font-size="10">(Linear growth)</text>
+
+                    <text x="600" y="45" fill="#a78bfa" font-size="11" font-weight="500">Market Demand</text>
+                    <text x="600" y="58" fill="#a78bfa" font-size="10">(Exponential)</text>
+                </svg>
+            </div>
+
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-line legend-demand"></div>
+                    <span class="legend-text">Market Demand</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-line legend-manual" style="border-top: 3px dashed #f87171; background: transparent;"></div>
+                    <span class="legend-text">Manual Capacity</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-line legend-ai"></div>
+                    <span class="legend-text">AI-Augmented Capacity</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number green">80%</div>
+                <div class="stat-label">Reduction in review time per project (6-8 hours to 60-90 minutes)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number cyan">111</div>
+                <div class="stat-label">Farms in Czech/Slovak pipeline awaiting registration</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number purple">21</div>
+                <div class="stat-label">UK Ecometric projects registered under single methodology</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number orange">19.7%</div>
+                <div class="stat-label">Annual growth rate in regenerative agriculture verification market</div>
+            </div>
+        </div>
+
+        <div class="timeline-section">
+            <h2 class="timeline-title">The Scaling Journey</h2>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">Early 2025</div>
+                        <div class="timeline-text">Ecometric methodology begins scaling. First wave of UK grassland projects register with Regen Network.</div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">November 2025</div>
+                        <div class="timeline-text">21 UK projects registered. Eastern European partnership proposes 111 farm registrations. Capacity concerns emerge.</div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">December 2025</div>
+                        <div class="timeline-text">Registry Review MCP enters alpha testing. Becca begins live validation of AI-assisted workflows.</div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">January 2026</div>
+                        <div class="timeline-text">AI intervention point. Registry Assistant demonstrates 80% time reduction while preserving human judgment for approval decisions.</div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">2026 and Beyond</div>
+                        <div class="timeline-text">Capacity scales with demand. 111 farms become tractable. The question shifts from "can we handle this?" to "what becomes possible now?"</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="quote-section">
+            <p class="quote-text">"The scale posed a beautiful challenge. Regen Network was still relatively small, yet this partnership demanded they meet a level of scalability that only this kind of AI-assisted system could provide."</p>
+            <p class="quote-attribution">- Registry Review Walkthrough, December 2025</p>
+        </div>
+    </div>
+</body>
+</html>

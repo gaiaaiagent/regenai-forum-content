@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agentic Architecture Patterns - RegenAI Week 4</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #e8e8e8;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #7ec8a3;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #94a3b8;
+            font-weight: 300;
+        }
+
+        .diagram-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        @media (max-width: 900px) {
+            .diagram-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .pattern-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid rgba(126, 200, 163, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .pattern-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(126, 200, 163, 0.15);
+        }
+
+        .pattern-title {
+            font-size: 1.3rem;
+            color: #7ec8a3;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .pattern-number {
+            background: #7ec8a3;
+            color: #1a1a2e;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .pattern-description {
+            font-size: 0.95rem;
+            color: #94a3b8;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        /* Diagram SVG styles */
+        .diagram-container {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            padding: 1rem;
+            min-height: 280px;
+        }
+
+        svg {
+            width: 100%;
+            height: auto;
+        }
+
+        .node {
+            transition: all 0.3s ease;
+        }
+
+        .node:hover {
+            filter: brightness(1.2);
+        }
+
+        .node-rect {
+            rx: 8;
+            ry: 8;
+        }
+
+        .orchestrator {
+            fill: #7ec8a3;
+        }
+
+        .sub-agent {
+            fill: #5c9ead;
+        }
+
+        .human {
+            fill: #e8985e;
+        }
+
+        .context {
+            fill: #8b5cf6;
+        }
+
+        .prompt {
+            fill: #ec4899;
+        }
+
+        .node-text {
+            fill: #1a1a2e;
+            font-size: 11px;
+            font-weight: 600;
+            text-anchor: middle;
+            dominant-baseline: middle;
+        }
+
+        .connector {
+            stroke: rgba(126, 200, 163, 0.4);
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .connector-arrow {
+            fill: rgba(126, 200, 163, 0.6);
+        }
+
+        .data-flow {
+            stroke: rgba(236, 72, 153, 0.5);
+            stroke-width: 2;
+            stroke-dasharray: 5 3;
+            fill: none;
+        }
+
+        .label-text {
+            fill: #94a3b8;
+            font-size: 9px;
+            text-anchor: middle;
+        }
+
+        /* Philosophy cards */
+        .philosophy-section {
+            margin-top: 2rem;
+        }
+
+        .philosophy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .philosophy-card {
+            background: rgba(126, 200, 163, 0.08);
+            border-radius: 12px;
+            padding: 1.25rem;
+            border-left: 3px solid #7ec8a3;
+        }
+
+        .philosophy-card h3 {
+            color: #7ec8a3;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .philosophy-card p {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .principle-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Legend */
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-top: 2rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(126, 200, 163, 0.2);
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: #7ec8a3;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Agentic Architecture Patterns</h1>
+            <p class="subtitle">Four philosophies shaping multi-agent systems for regenerative infrastructure</p>
+        </header>
+
+        <div class="diagram-grid">
+            <!-- Pattern 1: Context Engineering -->
+            <div class="pattern-card">
+                <h2 class="pattern-title">
+                    <span class="pattern-number">1</span>
+                    Context Engineering
+                </h2>
+                <p class="pattern-description">
+                    Curating what an agent can see so attention remains focused. The two strategies: <strong>Reduce</strong> (minimize noise) and <strong>Delegate</strong> (specialize context windows).
+                </p>
+                <div class="diagram-container">
+                    <svg viewBox="0 0 360 200">
+                        <!-- Primary Agent -->
+                        <g class="node" transform="translate(180, 40)">
+                            <rect class="node-rect context" x="-50" y="-18" width="100" height="36"/>
+                            <text class="node-text">PRIMARY AGENT</text>
+                        </g>
+
+                        <!-- Context Filter -->
+                        <rect x="130" y="75" width="100" height="24" rx="12" fill="rgba(139, 92, 246, 0.3)" stroke="#8b5cf6" stroke-width="1"/>
+                        <text x="180" y="91" class="label-text" fill="#c4b5fd">Context Filter</text>
+
+                        <!-- Sub-agents with isolated context -->
+                        <g class="node" transform="translate(70, 150)">
+                            <rect class="node-rect sub-agent" x="-40" y="-15" width="80" height="30"/>
+                            <text class="node-text" font-size="10">FOCUSED A</text>
+                        </g>
+                        <g class="node" transform="translate(180, 150)">
+                            <rect class="node-rect sub-agent" x="-40" y="-15" width="80" height="30"/>
+                            <text class="node-text" font-size="10">FOCUSED B</text>
+                        </g>
+                        <g class="node" transform="translate(290, 150)">
+                            <rect class="node-rect sub-agent" x="-40" y="-15" width="80" height="30"/>
+                            <text class="node-text" font-size="10">FOCUSED C</text>
+                        </g>
+
+                        <!-- Connections -->
+                        <path class="connector" d="M180 58 L180 75"/>
+                        <path class="connector" d="M180 99 L70 135"/>
+                        <path class="connector" d="M180 99 L180 135"/>
+                        <path class="connector" d="M180 99 L290 135"/>
+
+                        <!-- Context bubbles -->
+                        <circle cx="70" cy="150" r="45" fill="none" stroke="rgba(139, 92, 246, 0.3)" stroke-dasharray="3 2"/>
+                        <circle cx="180" cy="150" r="45" fill="none" stroke="rgba(139, 92, 246, 0.3)" stroke-dasharray="3 2"/>
+                        <circle cx="290" cy="150" r="45" fill="none" stroke="rgba(139, 92, 246, 0.3)" stroke-dasharray="3 2"/>
+
+                        <text x="70" y="180" class="label-text">isolated context</text>
+                        <text x="180" y="180" class="label-text">isolated context</text>
+                        <text x="290" y="180" class="label-text">isolated context</text>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Pattern 2: Orchestrator Pattern -->
+            <div class="pattern-card">
+                <h2 class="pattern-title">
+                    <span class="pattern-number">2</span>
+                    Orchestrator Pattern
+                </h2>
+                <p class="pattern-description">
+                    A coordinating agent creates conditions where specialized agents can each do what they do best, like mycelium coordinating forest resources.
+                </p>
+                <div class="diagram-container">
+                    <svg viewBox="0 0 360 200">
+                        <!-- Central Orchestrator -->
+                        <g class="node" transform="translate(180, 70)">
+                            <rect class="node-rect orchestrator" x="-55" y="-22" width="110" height="44"/>
+                            <text class="node-text" font-size="10">ORCHESTRATOR</text>
+                            <text class="node-text" y="12" font-size="8" fill="#1a1a2e">single interface</text>
+                        </g>
+
+                        <!-- Input -->
+                        <g transform="translate(180, 15)">
+                            <rect x="-30" y="-10" width="60" height="20" rx="4" fill="rgba(255,255,255,0.1)" stroke="#94a3b8"/>
+                            <text class="label-text" y="4" fill="#e8e8e8">Request</text>
+                        </g>
+                        <path class="connector" d="M180 25 L180 48" marker-end="url(#arrowhead)"/>
+
+                        <!-- Specialized Agents -->
+                        <g class="node" transform="translate(50, 155)">
+                            <rect class="node-rect sub-agent" x="-35" y="-15" width="70" height="30"/>
+                            <text class="node-text" font-size="9">SCOUT</text>
+                        </g>
+                        <g class="node" transform="translate(130, 175)">
+                            <rect class="node-rect sub-agent" x="-35" y="-15" width="70" height="30"/>
+                            <text class="node-text" font-size="9">PLANNER</text>
+                        </g>
+                        <g class="node" transform="translate(230, 175)">
+                            <rect class="node-rect sub-agent" x="-35" y="-15" width="70" height="30"/>
+                            <text class="node-text" font-size="9">BUILDER</text>
+                        </g>
+                        <g class="node" transform="translate(310, 155)">
+                            <rect class="node-rect sub-agent" x="-35" y="-15" width="70" height="30"/>
+                            <text class="node-text" font-size="9">REVIEWER</text>
+                        </g>
+
+                        <!-- Connections from orchestrator -->
+                        <path class="connector" d="M145 92 L60 140"/>
+                        <path class="connector" d="M165 92 L130 160"/>
+                        <path class="connector" d="M195 92 L230 160"/>
+                        <path class="connector" d="M215 92 L300 140"/>
+
+                        <!-- Circular flow indicator -->
+                        <path class="data-flow" d="M85 155 Q90 120 125 160"/>
+                        <path class="data-flow" d="M165 175 Q200 155 195 175"/>
+                        <path class="data-flow" d="M265 175 Q295 155 275 155"/>
+
+                        <!-- Arrow marker definition -->
+                        <defs>
+                            <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                                <polygon class="connector-arrow" points="0 0, 8 3, 0 6"/>
+                            </marker>
+                        </defs>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Pattern 3: Human-in-the-Loop -->
+            <div class="pattern-card">
+                <h2 class="pattern-title">
+                    <span class="pattern-number">3</span>
+                    Human-in-the-Loop
+                </h2>
+                <p class="pattern-description">
+                    Agents know their limits and pause for human judgment at critical decision points. Partnership, not supervision.
+                </p>
+                <div class="diagram-container">
+                    <svg viewBox="0 0 360 200">
+                        <!-- Workflow stages -->
+                        <g class="node" transform="translate(55, 50)">
+                            <rect class="node-rect sub-agent" x="-35" y="-15" width="70" height="30"/>
+                            <text class="node-text" font-size="9">PROCESS</text>
+                        </g>
+
+                        <g class="node" transform="translate(150, 50)">
+                            <rect class="node-rect sub-agent" x="-35" y="-15" width="70" height="30"/>
+                            <text class="node-text" font-size="9">ANALYZE</text>
+                        </g>
+
+                        <!-- Decision point -->
+                        <g transform="translate(245, 50)">
+                            <polygon points="0,-22 30,0 0,22 -30,0" fill="#e8985e" stroke="#1a1a2e" stroke-width="1"/>
+                            <text class="node-text" font-size="8">DECIDE?</text>
+                        </g>
+
+                        <!-- Human review -->
+                        <g class="node" transform="translate(245, 130)">
+                            <rect class="node-rect human" x="-40" y="-18" width="80" height="36"/>
+                            <text class="node-text" font-size="9">HUMAN</text>
+                            <text class="node-text" y="10" font-size="8">REVIEW</text>
+                        </g>
+
+                        <!-- Continue/Complete -->
+                        <g class="node" transform="translate(330, 50)">
+                            <rect class="node-rect orchestrator" x="-25" y="-15" width="50" height="30"/>
+                            <text class="node-text" font-size="8">DONE</text>
+                        </g>
+
+                        <!-- Connections -->
+                        <path class="connector" d="M90 50 L115 50" marker-end="url(#arrowhead)"/>
+                        <path class="connector" d="M185 50 L215 50"/>
+                        <path class="connector" d="M275 50 L305 50" marker-end="url(#arrowhead)"/>
+
+                        <!-- To human review -->
+                        <path class="connector" d="M245 72 L245 112" marker-end="url(#arrowhead)"/>
+                        <text x="258" y="95" class="label-text">pause</text>
+
+                        <!-- Human feedback loop -->
+                        <path class="data-flow" d="M205 130 Q120 130 120 70 Q120 50 115 50"/>
+                        <text x="140" y="115" class="label-text">reject + feedback</text>
+
+                        <path class="connector" d="M285 130 Q330 130 330 80" marker-end="url(#arrowhead)"/>
+                        <text x="315" y="115" class="label-text">approve</text>
+
+                        <!-- Labels -->
+                        <text x="55" y="85" class="label-text">automated</text>
+                        <text x="150" y="85" class="label-text">automated</text>
+                        <text x="245" y="175" class="label-text">judgment + context</text>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Pattern 4: Prompts as Primitives -->
+            <div class="pattern-card">
+                <h2 class="pattern-title">
+                    <span class="pattern-number">4</span>
+                    Prompts as Primitives
+                </h2>
+                <p class="pattern-description">
+                    Reusable, composable prompts encode expertise. The prompt is the fundamental unit of engineering in agentic systems.
+                </p>
+                <div class="diagram-container">
+                    <svg viewBox="0 0 360 200">
+                        <!-- Prompt library -->
+                        <g transform="translate(70, 40)">
+                            <rect x="-55" y="-25" width="110" height="50" rx="6" fill="rgba(236, 72, 153, 0.2)" stroke="#ec4899"/>
+                            <text class="label-text" y="-8" fill="#f9a8d4">PROMPT LIBRARY</text>
+                            <text class="label-text" y="8" fill="#94a3b8">reusable patterns</text>
+                        </g>
+
+                        <!-- Individual prompts -->
+                        <g class="node" transform="translate(40, 105)">
+                            <rect class="node-rect prompt" x="-28" y="-12" width="56" height="24"/>
+                            <text class="node-text" font-size="8">/scout</text>
+                        </g>
+                        <g class="node" transform="translate(100, 105)">
+                            <rect class="node-rect prompt" x="-28" y="-12" width="56" height="24"/>
+                            <text class="node-text" font-size="8">/plan</text>
+                        </g>
+                        <g class="node" transform="translate(70, 145)">
+                            <rect class="node-rect prompt" x="-28" y="-12" width="56" height="24"/>
+                            <text class="node-text" font-size="8">/build</text>
+                        </g>
+
+                        <!-- Composition arrows -->
+                        <path class="data-flow" d="M70 65 L40 93"/>
+                        <path class="data-flow" d="M70 65 L100 93"/>
+                        <path class="data-flow" d="M70 65 L70 133"/>
+
+                        <!-- Composite prompt -->
+                        <g transform="translate(200, 100)">
+                            <rect x="-60" y="-35" width="120" height="70" rx="8" fill="rgba(126, 200, 163, 0.15)" stroke="#7ec8a3" stroke-width="2"/>
+                            <text class="label-text" y="-18" fill="#7ec8a3">COMPOSITE</text>
+                            <text class="label-text" y="-4" fill="#94a3b8">/scout-plan-build</text>
+                            <text class="label-text" y="18" fill="#64748b" font-size="8">workflow: sequential</text>
+                        </g>
+
+                        <!-- Arrow to composite -->
+                        <path class="connector" d="M128 105 L140 100" marker-end="url(#arrowhead)"/>
+
+                        <!-- Agent execution -->
+                        <g class="node" transform="translate(310, 100)">
+                            <rect class="node-rect sub-agent" x="-35" y="-20" width="70" height="40"/>
+                            <text class="node-text" font-size="9">AGENT</text>
+                            <text class="node-text" y="12" font-size="7">executes</text>
+                        </g>
+
+                        <path class="connector" d="M260 100 L275 100" marker-end="url(#arrowhead)"/>
+
+                        <!-- Output -->
+                        <g transform="translate(310, 170)">
+                            <rect x="-35" y="-12" width="70" height="24" rx="4" fill="rgba(255,255,255,0.1)" stroke="#94a3b8"/>
+                            <text class="label-text" y="4" fill="#e8e8e8">Output</text>
+                        </g>
+                        <path class="connector" d="M310 120 L310 158" marker-end="url(#arrowhead)"/>
+
+                        <!-- Versioning indicator -->
+                        <text x="70" y="180" class="label-text">v1.0 -> v1.1 -> v2.0</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Philosophy section -->
+        <section class="philosophy-section">
+            <div class="philosophy-grid">
+                <div class="philosophy-card">
+                    <div class="principle-icon">🌿</div>
+                    <h3>Emergence > Control</h3>
+                    <p>Create conditions for unexpected possibilities rather than enforcing predetermined outcomes. Let intelligence emerge from interaction.</p>
+                </div>
+                <div class="philosophy-card">
+                    <div class="principle-icon">🔗</div>
+                    <h3>Autonomy + Coordination</h3>
+                    <p>Each node maintains its own truth while contributing to collective intelligence. Decentralization enables emergence.</p>
+                </div>
+                <div class="philosophy-card">
+                    <div class="principle-icon">🤝</div>
+                    <h3>Partnership over Supervision</h3>
+                    <p>AI augments human capacity; humans contribute judgment no model can replicate. Together, something emerges neither could achieve alone.</p>
+                </div>
+                <div class="philosophy-card">
+                    <div class="principle-icon">🧠</div>
+                    <h3>Infrastructure is Ontological</h3>
+                    <p>The systems we build shape what becomes collectively thinkable. Prompts encode expertise; architecture enables or constrains possibility.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Legend -->
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: #7ec8a3;"></div>
+                <span>Orchestrator / Output</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #5c9ead;"></div>
+                <span>Specialized Agent</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #e8985e;"></div>
+                <span>Human Decision Point</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #8b5cf6;"></div>
+                <span>Context Boundary</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #ec4899;"></div>
+                <span>Prompt Primitive</span>
+            </div>
+        </div>
+
+        <footer>
+            <p>RegenAI Week 4 - Registry Assistant MCP | <a href="https://forum.regen.network">Regen Network Forum</a></p>
+            <p style="margin-top: 0.5rem; font-size: 0.8rem;">Patterns drawn from agentic coding literature, Anthropic multi-agent research, and regenerative systems thinking</p>
+        </footer>
+    </div>
+</body>
+</html>

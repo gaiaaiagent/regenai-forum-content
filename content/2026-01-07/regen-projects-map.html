@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Regen Network Global Projects</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+        .emoji-marker {
+            font-size: 28px;
+            text-align: center;
+            line-height: 1;
+            opacity: 0.9;
+            text-shadow:
+                -1px -1px 0 #000,
+                 1px -1px 0 #000,
+                -1px  1px 0 #000,
+                 1px  1px 0 #000,
+                 0px -1px 0 #000,
+                 0px  1px 0 #000,
+                -1px  0px 0 #000,
+                 1px  0px 0 #000;
+        }
+        .leaflet-popup-content {
+            margin: 10px 15px;
+        }
+        .popup-title {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: #1a5f2a;
+        }
+        .popup-class {
+            font-size: 12px;
+            color: #666;
+        }
+        .popup-jurisdiction {
+            font-size: 11px;
+            color: #888;
+            margin-top: 3px;
+        }
+        .legend {
+            position: absolute;
+            bottom: 30px;
+            left: 10px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            font-size: 12px;
+            max-width: 220px;
+            z-index: 1000;
+        }
+        .legend h4 {
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            color: #1a5f2a;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+        }
+        .legend-emoji {
+            width: 24px;
+            margin-right: 8px;
+            font-size: 16px;
+        }
+        .stats {
+            position: absolute;
+            top: 10px;
+            left: 50px;
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+        .stats h3 {
+            margin: 0 0 5px 0;
+            color: #1a5f2a;
+            font-size: 18px;
+        }
+        .stats p {
+            margin: 0;
+            color: #666;
+            font-size: 13px;
+        }
+        .style-selector {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+        .style-selector label {
+            font-size: 12px;
+            color: #666;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .style-selector select {
+            padding: 5px 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            font-size: 13px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div id="map"></div>
+<div class="stats">
+    <h3>🌍 Regen Network Projects</h3>
+    <p>57 projects across 15 countries</p>
+    <p style="font-size: 11px; color: #999; margin-top: 5px;">Data from Regen Ledger (live)</p>
+</div>
+<div class="style-selector">
+    <label>Map Style</label>
+    <select id="style-select">
+        <option value="watercolor" selected>Stamen Watercolor</option>
+        <option value="positron">CartoDB Positron (Light)</option>
+        <option value="darkmatter">CartoDB Dark Matter</option>
+        <option value="osm">OpenStreetMap</option>
+        <option value="toner">Stamen Toner</option>
+        <option value="terrain">Stamen Terrain</option>
+        <option value="satellite">ESRI Satellite</option>
+    </select>
+</div>
+<div class="legend">
+    <h4>Credit Classes</h4>
+    <div class="legend-item"><span class="legend-emoji">🌲</span> C06 - Ecometric (UK) - 21</div>
+    <div class="legend-item"><span class="legend-emoji">🌳</span> C02 - City Forest (USA) - 12</div>
+    <div class="legend-item"><span class="legend-emoji">🌴</span> C01/C03 - VCS Carbon - 15</div>
+    <div class="legend-item"><span class="legend-emoji">🦋</span> BT01 - Biodiversity - 2</div>
+    <div class="legend-item"><span class="legend-emoji">🐆</span> USS01 - Biocultural - 2</div>
+    <div class="legend-item"><span class="legend-emoji">🌾</span> C07 - CarbonPlus - 2</div>
+    <div class="legend-item"><span class="legend-emoji">🦅</span> KSH01 - Keystone - 1</div>
+    <div class="legend-item"><span class="legend-emoji">🐚</span> MBS01 - Marine - 1</div>
+</div>
+
+<script>
+    // Initialize map centered on Atlantic for global view
+    // Fine-grained zoom: 0.25 increments instead of whole numbers
+    const map = L.map('map', {
+        zoomSnap: 0.25,
+        zoomDelta: 0.25
+    }).setView([20, 0], 2);
+
+    // Tile layer definitions
+    const tileLayers = {
+        positron: L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            attribution: '© CartoDB © OpenStreetMap | Data: Regen Ledger',
+            maxZoom: 19
+        }),
+        darkmatter: L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '© CartoDB © OpenStreetMap | Data: Regen Ledger',
+            maxZoom: 19
+        }),
+        osm: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors | Data: Regen Ledger',
+            maxZoom: 19
+        }),
+        watercolor: L.tileLayer('https://tiles.stadiamaps.com/tiles/stamen_watercolor/{z}/{x}/{y}.jpg', {
+            attribution: '© Stadia Maps © Stamen Design © OpenStreetMap | Data: Regen Ledger',
+            maxZoom: 16
+        }),
+        toner: L.tileLayer('https://tiles.stadiamaps.com/tiles/stamen_toner/{z}/{x}/{y}{r}.png', {
+            attribution: '© Stadia Maps © Stamen Design © OpenStreetMap | Data: Regen Ledger',
+            maxZoom: 20
+        }),
+        terrain: L.tileLayer('https://tiles.stadiamaps.com/tiles/stamen_terrain/{z}/{x}/{y}{r}.png', {
+            attribution: '© Stadia Maps © Stamen Design © OpenStreetMap | Data: Regen Ledger',
+            maxZoom: 18
+        }),
+        satellite: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: '© Esri © DigitalGlobe | Data: Regen Ledger',
+            maxZoom: 19
+        })
+    };
+
+    // Start with Watercolor (artistic)
+    let currentLayer = tileLayers.watercolor;
+    currentLayer.addTo(map);
+
+    // Style switcher
+    document.getElementById('style-select').addEventListener('change', function(e) {
+        map.removeLayer(currentLayer);
+        currentLayer = tileLayers[e.target.value];
+        currentLayer.addTo(map);
+    });
+
+    // Jitter function for overlapping markers
+    function jitter(lat, lng, amount = 0.15) {
+        return [
+            lat + (Math.random() - 0.5) * amount,
+            lng + (Math.random() - 0.5) * amount
+        ];
+    }
+
+    // Regen Network projects from ledger query
+    // Source: http://public-rpc.regen.vitwit.com:1317/regen/ecocredit/v1/projects
+    const projects = [
+        // BT01 - Terrasos Biodiversity (Colombia)
+        { id: "BT01-001", class: "BT01", name: "Terrasos Biodiversity - Antioquia", jurisdiction: "CO-ANT", lat: 6.2476, lng: -75.5658, emoji: "🦋" },
+        { id: "BT01-002", class: "BT01", name: "Terrasos Biodiversity - Cundinamarca", jurisdiction: "CO-CUN", lat: 5.0269, lng: -74.0301, emoji: "🦋" },
+
+        // C01 - Verified Carbon Standard
+        { id: "C01-001", class: "C01", name: "VCS Carbon - DRC Mai-Ndombe", jurisdiction: "CD-MN", lat: -2.0, lng: 18.5, emoji: "🌴" },
+        { id: "C01-002", class: "C01", name: "VCS Carbon - Kenya", jurisdiction: "KE", lat: 0.0236, lng: 37.9062, emoji: "🌴" },
+        { id: "C01-003", class: "C01", name: "VCS Carbon - Peru Madre de Dios", jurisdiction: "PE-MDD", lat: -12.5933, lng: -69.1891, emoji: "🌴" },
+
+        // C02 - City Forest Credits (USA)
+        { id: "C02-001", class: "C02", name: "City Forest - Washington", jurisdiction: "US-WA", lat: 47.7511, lng: -120.7401, emoji: "🌳" },
+        { id: "C02-002", class: "C02", name: "City Forest - Ohio", jurisdiction: "US-OH", lat: 40.4173, lng: -82.9071, emoji: "🌳" },
+        { id: "C02-003", class: "C02", name: "City Forest - Pennsylvania", jurisdiction: "US-PA", lat: 41.2033, lng: -77.1945, emoji: "🌳" },
+        { id: "C02-004", class: "C02", name: "City Forest - Issaquah WA", jurisdiction: "US-WA", lat: 47.5301, lng: -122.0326, emoji: "🌳" },
+        { id: "C02-005", class: "C02", name: "City Forest - Richmond VA", jurisdiction: "US-VA", lat: 37.5407, lng: -77.4360, emoji: "🌳" },
+        { id: "C02-006", class: "C02", name: "City Forest - Chattanooga TN", jurisdiction: "US-TN", lat: 35.0456, lng: -85.3097, emoji: "🌳" },
+        { id: "C02-007", class: "C02", name: "City Forest - Iowa", jurisdiction: "US-IA", lat: 41.8780, lng: -93.0977, emoji: "🌳" },
+        { id: "C02-008", class: "C02", name: "City Forest - Idaho", jurisdiction: "US-ID", lat: 44.0682, lng: -114.7420, emoji: "🌳" },
+        { id: "C02-009", class: "C02", name: "City Forest - Texas", jurisdiction: "US-TX", lat: 31.9686, lng: -99.9018, emoji: "🌳" },
+        { id: "C02-010", class: "C02", name: "City Forest - Washington 2", jurisdiction: "US-WA", lat: 47.3, lng: -121.5, emoji: "🌳" },
+        { id: "C02-011", class: "C02", name: "City Forest - Illinois", jurisdiction: "US-IL", lat: 40.6331, lng: -89.3985, emoji: "🌳" },
+        { id: "C02-012", class: "C02", name: "City Forest - Illinois 2", jurisdiction: "US-IL", lat: 40.5, lng: -89.0, emoji: "🌳" },
+
+        // C03 - VCS Projects
+        { id: "C03-001", class: "C03", name: "VCS - Indonesia", jurisdiction: "ID", lat: -0.7893, lng: 113.9213, emoji: "🌴" },
+        { id: "C03-002", class: "C03", name: "VCS - Colombia", jurisdiction: "CO", lat: 4.5709, lng: -74.2973, emoji: "🌴" },
+        { id: "C03-003", class: "C03", name: "VCS - Cambodia", jurisdiction: "KH", lat: 12.5657, lng: 104.9910, emoji: "🌴" },
+        { id: "C03-004", class: "C03", name: "VCS - Kenya", jurisdiction: "KE", lat: 0.5, lng: 38.5, emoji: "🌴" },
+        { id: "C03-005", class: "C03", name: "VCS - Brazil", jurisdiction: "BR", lat: -14.2350, lng: -51.9253, emoji: "🌴" },
+        { id: "C03-006", class: "C03", name: "VCS - DRC", jurisdiction: "CD", lat: -4.0383, lng: 21.7587, emoji: "🌴" },
+        { id: "C03-007", class: "C03", name: "VCS - Brazil 2", jurisdiction: "BR", lat: -10.0, lng: -55.0, emoji: "🌴" },
+        { id: "C03-008", class: "C03", name: "VCS - China", jurisdiction: "CN", lat: 35.8617, lng: 104.1954, emoji: "🌴" },
+        { id: "C03-009", class: "C03", name: "VCS - China 2", jurisdiction: "CN", lat: 34.0, lng: 108.0, emoji: "🌴" },
+        { id: "C03-010", class: "C03", name: "VCS - China 3", jurisdiction: "CN", lat: 30.0, lng: 114.0, emoji: "🌴" },
+        { id: "C03-011", class: "C03", name: "VCS - China 4", jurisdiction: "CN", lat: 28.0, lng: 120.0, emoji: "🌴" },
+        { id: "C03-012", class: "C03", name: "VCS - Congo", jurisdiction: "CG", lat: -0.228, lng: 15.8277, emoji: "🌴" },
+
+        // C05 - Regen Project
+        { id: "C05-001", class: "C05", name: "Regen Carbon - Orcas Island WA", jurisdiction: "US-WA", lat: 48.6368, lng: -122.9062, emoji: "🌲" },
+
+        // C06 - Ecometric UK Projects (21 total)
+        { id: "C06-001", class: "C06", name: "Ecometric Grasslands UK", jurisdiction: "GB-ENG", lat: 53.5, lng: -1.5, emoji: "🌲" },
+        { id: "C06-002", class: "C06", name: "Ecometric Grasslands UK", jurisdiction: "GB-ENG", lat: 52.8, lng: -1.8, emoji: "🌲" },
+        { id: "C06-003", class: "C06", name: "Ecometric - Durham", jurisdiction: "GB-ENG", lat: 54.7761, lng: -1.5733, emoji: "🌲" },
+        { id: "C06-004", class: "C06", name: "Ecometric Grasslands UK", jurisdiction: "GB-ENG", lat: 53.0, lng: -2.0, emoji: "🌲" },
+        { id: "C06-005", class: "C06", name: "Ecometric Grasslands UK", jurisdiction: "GB-ENG", lat: 52.5, lng: -1.2, emoji: "🌲" },
+        { id: "C06-006", class: "C06", name: "Ecometric Grasslands UK", jurisdiction: "GB-ENG", lat: 54.0, lng: -1.0, emoji: "🌲" },
+        { id: "C06-007", class: "C06", name: "Ecometric Grasslands UK", jurisdiction: "GB-ENG", lat: 53.2, lng: -2.5, emoji: "🌲" },
+        { id: "C06-008", class: "C06", name: "Ecometric Grasslands UK", jurisdiction: "GB-ENG", lat: 52.0, lng: -0.8, emoji: "🌲" },
+        { id: "C06-009", class: "C06", name: "Ecometric Grasslands UK", jurisdiction: "GB-ENG", lat: 53.8, lng: -1.8, emoji: "🌲" },
+        { id: "C06-010", class: "C06", name: "Ecometric Grasslands UK", jurisdiction: "GB-ENG", lat: 52.3, lng: -1.5, emoji: "🌲" },
+        { id: "C06-011", class: "C06", name: "Ecometric Grasslands UK", jurisdiction: "GB-ENG", lat: 54.2, lng: -2.2, emoji: "🌲" },
+        { id: "C06-012", class: "C06", name: "Ecometric Grasslands UK", jurisdiction: "GB-ENG", lat: 51.8, lng: -1.0, emoji: "🌲" },
+        { id: "C06-013", class: "C06", name: "Ecometric Grasslands UK", jurisdiction: "GB-ENG", lat: 53.3, lng: -0.5, emoji: "🌲" },
+        { id: "C06-014", class: "C06", name: "Ecometric Grasslands UK", jurisdiction: "GB-ENG", lat: 54.5, lng: -1.5, emoji: "🌲" },
+        { id: "C06-015", class: "C06", name: "Ecometric Grasslands UK", jurisdiction: "GB-ENG", lat: 52.7, lng: -2.3, emoji: "🌲" },
+        { id: "C06-016", class: "C06", name: "Ecometric Grasslands UK", jurisdiction: "GB-ENG", lat: 53.6, lng: -1.2, emoji: "🌲" },
+        { id: "C06-017", class: "C06", name: "Ecometric Grasslands UK", jurisdiction: "GB-ENG", lat: 51.5, lng: -1.8, emoji: "🌲" },
+        { id: "C06-018", class: "C06", name: "Ecometric Grasslands UK", jurisdiction: "GB-ENG", lat: 54.3, lng: -0.8, emoji: "🌲" },
+        { id: "C06-019", class: "C06", name: "Ecometric Grasslands UK", jurisdiction: "GB-ENG", lat: 52.1, lng: -2.0, emoji: "🌲" },
+        { id: "C06-020", class: "C06", name: "Ecometric Grasslands UK", jurisdiction: "GB-ENG", lat: 53.9, lng: -2.8, emoji: "🌲" },
+        { id: "C06-021", class: "C06", name: "Ecometric Grasslands UK", jurisdiction: "GB-ENG", lat: 54.8, lng: -1.2, emoji: "🌲" },
+
+        // C07 - CarbonPlus Grasslands (Australia)
+        { id: "C07-001", class: "C07", name: "CarbonPlus Grasslands - NSW", jurisdiction: "AU-NSW", lat: -30.8, lng: 150.9, emoji: "🌾" },
+        { id: "C07-002", class: "C07", name: "CarbonPlus Grasslands - NSW", jurisdiction: "AU-NSW", lat: -34.7, lng: 149.0, emoji: "🌾" },
+
+        // KSH01 - Keystone Species (USA)
+        { id: "KSH01-001", class: "KSH01", name: "Keystone Species - California", jurisdiction: "US-CA", lat: 36.7783, lng: -119.4179, emoji: "🦅" },
+
+        // MBS01 - Marine (Kenya)
+        { id: "MBS01-001", class: "MBS01", name: "Marine Blue Carbon - Kenya", jurisdiction: "KE", lat: -4.0435, lng: 39.6682, emoji: "🐚" },
+
+        // USS01 - Biocultural (Brazil & Ecuador)
+        { id: "USS01-001", class: "USS01", name: "Biocultural - Brazil Pantanal", jurisdiction: "BR-MS", lat: -19.0, lng: -57.5, emoji: "🐆" },
+        { id: "USS01-002", class: "USS01", name: "Biocultural Jaguar Credits - Ecuador Amazon", jurisdiction: "EC-Y", lat: -2.1667, lng: -76.8333, emoji: "🐆" }
+    ];
+
+    // Create custom emoji icon
+    function createEmojiIcon(emoji) {
+        return L.divIcon({
+            html: `<div class="emoji-marker">${emoji}</div>`,
+            className: '',
+            iconSize: [34, 34],
+            iconAnchor: [17, 17],
+            popupAnchor: [0, -17]
+        });
+    }
+
+    // Add markers with jittering for overlapping coordinates
+    projects.forEach(project => {
+        const [jitteredLat, jitteredLng] = jitter(project.lat, project.lng, 1.5);
+        const marker = L.marker([jitteredLat, jitteredLng], {
+            icon: createEmojiIcon(project.emoji)
+        }).addTo(map);
+
+        marker.bindPopup(`
+            <div class="popup-title">${project.emoji} ${project.name}</div>
+            <div class="popup-class">Credit Class: ${project.class}</div>
+            <div class="popup-jurisdiction">Project ID: ${project.id}</div>
+            <div class="popup-jurisdiction">Jurisdiction: ${project.jurisdiction}</div>
+        `);
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registry Assistant MCP - Week 4 Essays</title>
+    <style>
+        :root {
+            --regen-green: #2d5a3d;
+            --regen-light: #4a8c5c;
+            --regen-dark: #1a3d28;
+            --earth-brown: #8b7355;
+            --soil-dark: #5c4a3d;
+            --mycelium-cream: #f5f1eb;
+            --carbon-black: #1a1a1a;
+            --glow-green: rgba(74, 140, 92, 0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, var(--carbon-black) 0%, var(--regen-dark) 50%, var(--soil-dark) 100%);
+            min-height: 100vh;
+            color: var(--mycelium-cream);
+        }
+
+        .mycelium-bg {
+            position: fixed;
+            inset: 0;
+            background-image:
+                radial-gradient(circle at 20% 80%, var(--glow-green) 0%, transparent 30%),
+                radial-gradient(circle at 80% 20%, var(--glow-green) 0%, transparent 25%),
+                radial-gradient(circle at 50% 50%, rgba(45, 90, 61, 0.2) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            padding: 3rem 0 4rem;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 300;
+            letter-spacing: 0.02em;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--mycelium-cream) 0%, var(--regen-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--regen-light);
+            font-weight: 300;
+            opacity: 0.9;
+        }
+
+        .week-badge {
+            display: inline-block;
+            background: var(--regen-green);
+            color: var(--mycelium-cream);
+            padding: 0.5rem 1.5rem;
+            border-radius: 2rem;
+            font-size: 0.875rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--regen-light);
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 2rem;
+            padding: 1rem 0;
+        }
+
+        .card {
+            background: linear-gradient(145deg, rgba(45, 90, 61, 0.3) 0%, rgba(26, 61, 40, 0.5) 100%);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(74, 140, 92, 0.3);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: var(--regen-light);
+            box-shadow:
+                0 20px 60px rgba(0, 0, 0, 0.4),
+                0 0 40px var(--glow-green);
+        }
+
+        .card-number {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: var(--regen-dark);
+            color: var(--regen-light);
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.875rem;
+            border: 2px solid var(--regen-light);
+            z-index: 10;
+        }
+
+        .preview-container {
+            position: relative;
+            width: 100%;
+            height: 220px;
+            background: var(--carbon-black);
+            overflow: hidden;
+        }
+
+        .preview-iframe {
+            width: 200%;
+            height: 200%;
+            transform: scale(0.5);
+            transform-origin: top left;
+            border: none;
+            pointer-events: none;
+            background: white;
+        }
+
+        .preview-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, transparent 60%, var(--carbon-black) 100%);
+            pointer-events: none;
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+            line-height: 1.4;
+            margin-bottom: 0.75rem;
+            color: var(--mycelium-cream);
+        }
+
+        .card-category {
+            display: inline-block;
+            font-size: 0.75rem;
+            color: var(--regen-light);
+            background: rgba(74, 140, 92, 0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            letter-spacing: 0.05em;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(74, 140, 92, 0.2);
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.625rem 1rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--regen-green);
+            color: var(--mycelium-cream);
+            border: 1px solid var(--regen-light);
+        }
+
+        .btn-primary:hover {
+            background: var(--regen-light);
+            color: var(--regen-dark);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--regen-light);
+            border: 1px solid var(--regen-light);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(74, 140, 92, 0.2);
+        }
+
+        /* Modal for full preview */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--mycelium-cream);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 1200px;
+            height: 90vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .modal-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--regen-dark);
+            color: var(--mycelium-cream);
+            border: none;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: var(--regen-light);
+            transform: rotate(90deg);
+        }
+
+        .modal-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--regen-dark);
+            color: var(--mycelium-cream);
+            border: 2px solid var(--regen-light);
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            font-size: 1.25rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .modal-nav:hover {
+            background: var(--regen-light);
+            color: var(--regen-dark);
+        }
+
+        .modal-prev { left: 1rem; }
+        .modal-next { right: 1rem; }
+
+        .modal-title {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, var(--regen-dark), transparent);
+            padding: 2rem 1.5rem 1rem;
+            color: var(--mycelium-cream);
+            font-size: 1.1rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 3rem 0;
+            color: rgba(245, 241, 235, 0.6);
+            font-size: 0.875rem;
+        }
+
+        footer a {
+            color: var(--regen-light);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            header {
+                padding: 2rem 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="mycelium-bg"></div>
+
+    <div class="container">
+        <header>
+            <div class="week-badge">Week 4 • January 2026</div>
+            <h1>Registry Assistant MCP</h1>
+            <p class="subtitle">17 Essays on Scaling Regenerative Verification Through AI</p>
+        </header>
+
+        <div class="gallery" id="gallery"></div>
+
+        <footer>
+            <p>Part of the <a href="https://forum.regen.network">Regen Network Forum</a> AI series</p>
+            <p style="margin-top: 0.5rem;">Building planetary intelligence, one verification at a time.</p>
+        </footer>
+    </div>
+
+    <div class="modal" id="modal">
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+        <button class="modal-nav modal-prev" onclick="prevSlide()">&#8592;</button>
+        <button class="modal-nav modal-next" onclick="nextSlide()">&#8594;</button>
+        <div class="modal-content">
+            <iframe class="modal-iframe" id="modalIframe"></iframe>
+            <div class="modal-title" id="modalTitle"></div>
+        </div>
+    </div>
+
+    <script>
+        const essays = [
+            { num: "01", file: "01-motivation", title: "Why This All Matters: The Verification Bottleneck", category: "Foundation" },
+            { num: "02", file: "02-impact-story", title: "The Impact of Regen: Where Credits Touch Ground", category: "Impact" },
+            { num: "03", file: "03-scaling-story", title: "Telling the Story of Regen Scaling", category: "Scaling" },
+            { num: "04", file: "04-pragmatic-ai", title: "Pragmatic AI: Automating the Tedious", category: "AI Philosophy" },
+            { num: "05", file: "05-finite-state-machines", title: "Finite State Machines: The Choreography of Change", category: "Architecture" },
+            { num: "06", file: "06-registry-as-fsm", title: "The Registry Assistant as Finite State Machine", category: "Architecture" },
+            { num: "07", file: "07-eight-stages-detail", title: "Breaking Down the Eight Stages in Detail", category: "Workflow" },
+            { num: "08", file: "08-methodologies-checklists", title: "Regen Methodologies and the Checklists", category: "Verification" },
+            { num: "09", file: "09-mcp-design-philosophy", title: "MCPs: The Connective Tissue of AI", category: "Protocol" },
+            { num: "10", file: "10-agentic-philosophies", title: "Agentic Philosophies: When Infrastructure Breathes", category: "AI Philosophy" },
+            { num: "11", file: "11-architecture-mcp-openapi", title: "Architecture: MCP and OpenAPI for ChatGPT", category: "Architecture" },
+            { num: "12", file: "12-implementation-nuances", title: "Nuances of the Implementation", category: "Engineering" },
+            { num: "13", file: "13-human-ai-collaboration", title: "Human-AI Collaboration: Blue Ink, Black Ink", category: "Collaboration" },
+            { num: "14", file: "14-economics-verification", title: "The Economics of AI-Assisted Verification", category: "Economics" },
+            { num: "15", file: "15-111-farms-case-study", title: "From 111 Farms to Planetary Scale", category: "Case Study" },
+            { num: "16", file: "16-chatgpt-rest-bridge", title: "ChatGPT REST Bridge: Democratizing Access", category: "Integration" },
+            { num: "17", file: "17-trust-provenance-audit", title: "Trust, Provenance, and the Audit Trail", category: "Trust" }
+        ];
+
+        let currentIndex = 0;
+
+        function createGallery() {
+            const gallery = document.getElementById('gallery');
+
+            essays.forEach((essay, index) => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <div class="card-number">${essay.num}</div>
+                    <div class="preview-container">
+                        <iframe class="preview-iframe" src="${essay.file}.html" loading="lazy"></iframe>
+                        <div class="preview-overlay"></div>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">${essay.title}</h3>
+                        <span class="card-category">${essay.category}</span>
+                        <div class="card-actions">
+                            <a href="${essay.file}.html" target="_blank" class="btn btn-primary">Open Full</a>
+                            <button class="btn btn-secondary" onclick="openModal(${index})">Preview</button>
+                        </div>
+                    </div>
+                `;
+                gallery.appendChild(card);
+            });
+        }
+
+        function openModal(index) {
+            currentIndex = index;
+            updateModal();
+            document.getElementById('modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+            document.body.style.overflow = '';
+            document.getElementById('modalIframe').src = '';
+        }
+
+        function updateModal() {
+            const essay = essays[currentIndex];
+            document.getElementById('modalIframe').src = `${essay.file}.html`;
+            document.getElementById('modalTitle').textContent = `${essay.num}. ${essay.title}`;
+        }
+
+        function prevSlide() {
+            currentIndex = (currentIndex - 1 + essays.length) % essays.length;
+            updateModal();
+        }
+
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % essays.length;
+            updateModal();
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('modal').classList.contains('active')) {
+                if (e.key === 'Escape') closeModal();
+                if (e.key === 'ArrowLeft') prevSlide();
+                if (e.key === 'ArrowRight') nextSlide();
+            }
+        });
+
+        createGallery();
+    </script>
+</body>
+</html>

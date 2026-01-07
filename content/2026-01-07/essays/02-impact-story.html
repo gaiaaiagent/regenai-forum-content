@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regen Network Global Impact Map</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a1628 0%, #1a2f4a 50%, #0d3320 100%);
+            min-height: 100vh;
+            color: #e0e8f0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            border: 1px solid rgba(100, 200, 150, 0.2);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #4ade80;
+            margin-bottom: 10px;
+            text-shadow: 0 0 30px rgba(74, 222, 128, 0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #94a3b8;
+            font-style: italic;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 15px 25px;
+            background: rgba(74, 222, 128, 0.1);
+            border-radius: 12px;
+            border: 1px solid rgba(74, 222, 128, 0.3);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #4ade80;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .map-container {
+            position: relative;
+            width: 100%;
+            background: rgba(10, 30, 50, 0.8);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(100, 200, 150, 0.2);
+            overflow: hidden;
+        }
+
+        .world-map {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            background:
+                radial-gradient(circle at 25% 40%, rgba(74, 222, 128, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 75% 60%, rgba(59, 130, 246, 0.05) 0%, transparent 40%);
+        }
+
+        /* Simplified continent outlines using CSS */
+        .continent {
+            position: absolute;
+            background: rgba(74, 222, 128, 0.08);
+            border: 1px solid rgba(74, 222, 128, 0.2);
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+        }
+
+        /* Europe */
+        .europe {
+            left: 45%;
+            top: 15%;
+            width: 12%;
+            height: 20%;
+        }
+
+        /* South America */
+        .south-america {
+            left: 22%;
+            top: 45%;
+            width: 10%;
+            height: 35%;
+            border-radius: 40% 60% 40% 60% / 30% 30% 70% 70%;
+        }
+
+        /* Africa */
+        .africa {
+            left: 45%;
+            top: 35%;
+            width: 12%;
+            height: 35%;
+            border-radius: 30% 70% 50% 50% / 30% 30% 70% 70%;
+        }
+
+        /* North America */
+        .north-america {
+            left: 10%;
+            top: 15%;
+            width: 18%;
+            height: 30%;
+            border-radius: 50% 50% 30% 70% / 30% 30% 70% 70%;
+        }
+
+        .project-marker {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .project-marker::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .project-marker:hover {
+            transform: scale(1.5);
+            z-index: 100;
+        }
+
+        .project-marker.carbon {
+            background: #4ade80;
+            box-shadow: 0 0 20px rgba(74, 222, 128, 0.6);
+        }
+
+        .project-marker.carbon::before {
+            background: rgba(74, 222, 128, 0.4);
+        }
+
+        .project-marker.biodiversity {
+            background: #60a5fa;
+            box-shadow: 0 0 20px rgba(96, 165, 250, 0.6);
+        }
+
+        .project-marker.biodiversity::before {
+            background: rgba(96, 165, 250, 0.4);
+        }
+
+        .project-marker.cultural {
+            background: #f472b6;
+            box-shadow: 0 0 20px rgba(244, 114, 182, 0.6);
+        }
+
+        .project-marker.cultural::before {
+            background: rgba(244, 114, 182, 0.4);
+        }
+
+        .project-marker.emerging {
+            background: #fbbf24;
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.6);
+        }
+
+        .project-marker.emerging::before {
+            background: rgba(251, 191, 36, 0.4);
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+            50% {
+                transform: scale(2);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0;
+            }
+        }
+
+        .project-tooltip {
+            position: absolute;
+            background: rgba(15, 30, 50, 0.95);
+            border: 1px solid rgba(74, 222, 128, 0.4);
+            border-radius: 12px;
+            padding: 15px 20px;
+            min-width: 280px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        .project-marker:hover .project-tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .tooltip-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #4ade80;
+            margin-bottom: 8px;
+        }
+
+        .tooltip-location {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-bottom: 10px;
+        }
+
+        .tooltip-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .tooltip-stat {
+            font-size: 0.8rem;
+        }
+
+        .tooltip-stat-label {
+            color: #64748b;
+        }
+
+        .tooltip-stat-value {
+            color: #e0e8f0;
+            font-weight: 500;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+        }
+
+        .legend-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.carbon { background: #4ade80; }
+        .legend-dot.biodiversity { background: #60a5fa; }
+        .legend-dot.cultural { background: #f472b6; }
+        .legend-dot.emerging { background: #fbbf24; }
+
+        .flow-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(100, 200, 150, 0.2);
+        }
+
+        .flow-title {
+            text-align: center;
+            font-size: 1.8rem;
+            color: #4ade80;
+            margin-bottom: 40px;
+        }
+
+        .flow-diagram {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .flow-step {
+            flex: 1;
+            min-width: 150px;
+            text-align: center;
+            padding: 25px 15px;
+            background: rgba(74, 222, 128, 0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(74, 222, 128, 0.2);
+            position: relative;
+        }
+
+        .flow-step::after {
+            content: '';
+            position: absolute;
+            right: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 12px solid rgba(74, 222, 128, 0.4);
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+        }
+
+        .flow-step:last-child::after {
+            display: none;
+        }
+
+        .flow-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .flow-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #4ade80;
+            margin-bottom: 5px;
+        }
+
+        .flow-description {
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+
+        .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .impact-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(100, 200, 150, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .impact-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(74, 222, 128, 0.4);
+            box-shadow: 0 10px 40px rgba(74, 222, 128, 0.1);
+        }
+
+        .impact-card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .impact-card-icon {
+            font-size: 2rem;
+        }
+
+        .impact-card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #4ade80;
+        }
+
+        .impact-card-region {
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+
+        .impact-card-body {
+            font-size: 0.9rem;
+            color: #cbd5e1;
+            line-height: 1.6;
+        }
+
+        .impact-metric {
+            display: inline-block;
+            background: rgba(74, 222, 128, 0.15);
+            color: #4ade80;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-top: 10px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: #4ade80;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Connection lines */
+        .connection-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, rgba(74, 222, 128, 0.1), rgba(74, 222, 128, 0.4), rgba(74, 222, 128, 0.1));
+            transform-origin: left center;
+            z-index: 1;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .stats-bar {
+                gap: 20px;
+            }
+
+            .stat-number {
+                font-size: 1.5rem;
+            }
+
+            .flow-step::after {
+                display: none;
+            }
+
+            .world-map {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Regen Network Global Impact</h1>
+            <p class="subtitle">Real projects. Real land. Real carbon sequestered.</p>
+
+            <div class="stats-bar">
+                <div class="stat">
+                    <div class="stat-number">1,039,069</div>
+                    <div class="stat-label">Credits Issued</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">9</div>
+                    <div class="stat-label">Credit Classes</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">77</div>
+                    <div class="stat-label">Credit Batches</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">132+</div>
+                    <div class="stat-label">Active Projects</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="map-container">
+            <h2 style="text-align: center; margin-bottom: 30px; color: #4ade80;">Project Locations Worldwide</h2>
+
+            <div class="world-map">
+                <!-- Simplified continent shapes -->
+                <div class="continent north-america"></div>
+                <div class="continent south-america"></div>
+                <div class="continent europe"></div>
+                <div class="continent africa"></div>
+
+                <!-- UK - Ecometric Projects (21 projects) -->
+                <div class="project-marker carbon" style="left: 47%; top: 22%;">
+                    <div class="project-tooltip" style="left: 30px; top: -20px;">
+                        <div class="tooltip-title">UK Ecometric Projects</div>
+                        <div class="tooltip-location">United Kingdom</div>
+                        <div class="tooltip-stats">
+                            <div class="tooltip-stat">
+                                <span class="tooltip-stat-label">Projects:</span>
+                                <span class="tooltip-stat-value">21</span>
+                            </div>
+                            <div class="tooltip-stat">
+                                <span class="tooltip-stat-label">Credits Sold:</span>
+                                <span class="tooltip-stat-value">100,000+</span>
+                            </div>
+                            <div class="tooltip-stat">
+                                <span class="tooltip-stat-label">Methodology:</span>
+                                <span class="tooltip-stat-value">Soil Carbon</span>
+                            </div>
+                            <div class="tooltip-stat">
+                                <span class="tooltip-stat-label">Status:</span>
+                                <span class="tooltip-stat-value">Verified</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Eastern Europe - Czech/Slovak Farms (111 farms planned) -->
+                <div class="project-marker emerging" style="left: 52%; top: 25%;">
+                    <div class="project-tooltip" style="left: 30px; top: -20px;">
+                        <div class="tooltip-title">Eastern European Farms</div>
+                        <div class="tooltip-location">Czech Republic & Slovakia</div>
+                        <div class="tooltip-stats">
+                            <div class="tooltip-stat">
+                                <span class="tooltip-stat-label">Farms Planned:</span>
+                                <span class="tooltip-stat-value">111</span>
+                            </div>
+                            <div class="tooltip-stat">
+                                <span class="tooltip-stat-label">Methodology:</span>
+                                <span class="tooltip-stat-value">Ecometric</span>
+                            </div>
+                            <div class="tooltip-stat">
+                                <span class="tooltip-stat-label">Focus:</span>
+                                <span class="tooltip-stat-value">Regen Ag</span>
+                            </div>
+                            <div class="tooltip-stat">
+                                <span class="tooltip-stat-label">Status:</span>
+                                <span class="tooltip-stat-value">Scaling</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ukraine - Carpathian Ecocenter -->
+                <div class="project-marker biodiversity" style="left: 56%; top: 23%;">
+                    <div class="project-tooltip" style="left: 30px; top: -20px;">
+                        <div class="tooltip-title">Ukrainian Ecocenters</div>
+                        <div class="tooltip-location">Carpathian Region, Ukraine</div>
+                        <div class="tooltip-stats">
+                            <div class="tooltip-stat">
+                                <span class="tooltip-stat-label">Projects:</span>
+                                <span class="tooltip-stat-value">6-7</span>
+                            </div>
+                            <div class="tooltip-stat">
+                                <span class="tooltip-stat-label">Focus:</span>
+                                <span class="tooltip-stat-value">Biodiversity</span>
+                            </div>
+                            <div class="tooltip-stat">
+                                <span class="tooltip-stat-label">Activities:</span>
+                                <span class="tooltip-stat-value">Species Doc</span>
+                            </div>
+                            <div class="tooltip-stat">
+                                <span class="tooltip-stat-label">Status:</span>
+                                <span class="tooltip-stat-value">Spontaneous</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Colombia - Terrasos -->
+                <div class="project-marker biodiversity" style="left: 24%; top: 48%;">
+                    <div class="project-tooltip" style="left: 30px; top: -20px;">
+                        <div class="tooltip-title">Terrasos Biodiversity</div>
+                        <div class="tooltip-location">Colombia</div>
+                        <div class="tooltip-stats">
+                            <div class="tooltip-stat">
+                                <span class="tooltip-stat-label">Credits:</span>
+                                <span class="tooltip-stat-value">30,233 BT01</span>
+                            </div>
+                            <div class="tooltip-stat">
+                                <span class="tooltip-stat-label">Model:</span>
+                                <span class="tooltip-stat-value">Tebu Units</span>
+                            </div>
+                            <div class="tooltip-stat">
+                                <span class="tooltip-stat-label">Duration:</span>
+                                <span class="tooltip-stat-value">30 years</span>
+                            </div>
+                            <div class="tooltip-stat">
+                                <span class="tooltip-stat-label">Verified:</span>
+                                <span class="tooltip-stat-value">Third Party</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ecuador - Sacred Headwaters / Jaguar Credits -->
+                <div class="project-marker cultural" style="left: 21%; top: 55%;">
+                    <div class="project-tooltip" style="left: 30px; top: -20px;">
+                        <div class="tooltip-title">Biocultural Jaguar Credits</div>
+                        <div class="tooltip-location">Sacred Headwaters, Ecuador</div>
+                        <div class="tooltip-stats">
+                            <div class="tooltip-stat">
+                                <span class="tooltip-stat-label">Hectares:</span>
+                                <span class="tooltip-stat-value">10,000</span>
+                            </div>
+                            <div class="tooltip-stat">
+                                <span class="tooltip-stat-label">Community:</span>
+                                <span class="tooltip-stat-value">Achuar</span>
+                            </div>
+                            <div class="tooltip-stat">
+                                <span class="tooltip-stat-label">Focus:</span>
+                                <span class="tooltip-stat-value">Jaguar Habitat</span>
+                            </div>
+                            <div class="tooltip-stat">
+                                <span class="tooltip-stat-label">Partners:</span>
+                                <span class="tooltip-stat-value">Pachamama</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Brazil - ERA Amazon -->
+                <div class="project-marker biodiversity" style="left: 28%; top: 58%;">
+                    <div class="project-tooltip" style="left: -290px; top: -20px;">
+                        <div class="tooltip-title">ERA Brazil</div>
+                        <div class="tooltip-location">Amazon Basin, Brazil</div>
+                        <div class="tooltip-stats">
+                            <div class="tooltip-stat">
+                                <span class="tooltip-stat-label">Focus:</span>
+                                <span class="tooltip-stat-value">Keystone Species</span>
+                            </div>
+                            <div class="tooltip-stat">
+                                <span class="tooltip-stat-label">Approach:</span>
+                                <span class="tooltip-stat-value">Trophic Cascade</span>
+                            </div>
+                            <div class="tooltip-stat">
+                                <span class="tooltip-stat-label">Registry:</span>
+                                <span class="tooltip-stat-value">Regen Network</span>
+                            </div>
+                            <div class="tooltip-stat">
+                                <span class="tooltip-stat-label">Status:</span>
+                                <span class="tooltip-stat-value">Active</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- South Africa - Grasslands -->
+                <div class="project-marker carbon" style="left: 55%; top: 72%;">
+                    <div class="project-tooltip" style="left: -290px; top: -20px;">
+                        <div class="tooltip-title">South Africa Grasslands</div>
+                        <div class="tooltip-location">South Africa</div>
+                        <div class="tooltip-stats">
+                            <div class="tooltip-stat">
+                                <span class="tooltip-stat-label">Focus:</span>
+                                <span class="tooltip-stat-value">Grassland Carbon</span>
+                            </div>
+                            <div class="tooltip-stat">
+                                <span class="tooltip-stat-label">Session:</span>
+                                <span class="tooltip-stat-value">Builder Lab</span>
+                            </div>
+                            <div class="tooltip-stat">
+                                <span class="tooltip-stat-label">Developer:</span>
+                                <span class="tooltip-stat-value">Johan</span>
+                            </div>
+                            <div class="tooltip-stat">
+                                <span class="tooltip-stat-label">Status:</span>
+                                <span class="tooltip-stat-value">Developing</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- USA - Kulshan Carbon Trust -->
+                <div class="project-marker carbon" style="left: 15%; top: 28%;">
+                    <div class="project-tooltip" style="left: 30px; top: -20px;">
+                        <div class="tooltip-title">Kulshan Carbon Trust</div>
+                        <div class="tooltip-location">Washington State, USA</div>
+                        <div class="tooltip-stats">
+                            <div class="tooltip-stat">
+                                <span class="tooltip-stat-label">Credits:</span>
+                                <span class="tooltip-stat-value">372 tCO2e</span>
+                            </div>
+                            <div class="tooltip-stat">
+                                <span class="tooltip-stat-label">Methodology:</span>
+                                <span class="tooltip-stat-value">Biochar</span>
+                            </div>
+                            <div class="tooltip-stat">
+                                <span class="tooltip-stat-label">Credit Class:</span>
+                                <span class="tooltip-stat-value">C05</span>
+                            </div>
+                            <div class="tooltip-stat">
+                                <span class="tooltip-stat-label">Status:</span>
+                                <span class="tooltip-stat-value">Pilot</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-dot carbon"></div>
+                    <span>Carbon / Soil Credits</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot biodiversity"></div>
+                    <span>Biodiversity Credits</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot cultural"></div>
+                    <span>Biocultural Credits</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot emerging"></div>
+                    <span>Emerging / Scaling</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="flow-section">
+            <h2 class="flow-title">From Land Stewardship to Verified Impact</h2>
+
+            <div class="flow-diagram">
+                <div class="flow-step">
+                    <div class="flow-icon">🌱</div>
+                    <div class="flow-label">Land Stewardship</div>
+                    <div class="flow-description">Farmers practice regenerative agriculture</div>
+                </div>
+
+                <div class="flow-step">
+                    <div class="flow-icon">📊</div>
+                    <div class="flow-label">Measurement</div>
+                    <div class="flow-description">Soil carbon, biodiversity documented</div>
+                </div>
+
+                <div class="flow-step">
+                    <div class="flow-icon">🔍</div>
+                    <div class="flow-label">Verification</div>
+                    <div class="flow-description">Third-party VVBs confirm claims</div>
+                </div>
+
+                <div class="flow-step">
+                    <div class="flow-icon">🤖</div>
+                    <div class="flow-label">AI Review</div>
+                    <div class="flow-description">Registry Assistant processes docs</div>
+                </div>
+
+                <div class="flow-step">
+                    <div class="flow-icon">⛓️</div>
+                    <div class="flow-label">On-Chain</div>
+                    <div class="flow-description">Credits issued to Regen Ledger</div>
+                </div>
+
+                <div class="flow-step">
+                    <div class="flow-icon">💚</div>
+                    <div class="flow-label">Impact</div>
+                    <div class="flow-description">Capital flows to regeneration</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="impact-grid">
+            <div class="impact-card">
+                <div class="impact-card-header">
+                    <div class="impact-card-icon">🇬🇧</div>
+                    <div>
+                        <div class="impact-card-title">Ecometric UK</div>
+                        <div class="impact-card-region">United Kingdom</div>
+                    </div>
+                </div>
+                <div class="impact-card-body">
+                    In just two years, Ecometric has developed, trialed, and brought to market a new approach to assessing soil carbon. Twenty-one projects now operate under this methodology, with verified third-party confirmation of full compliance.
+                    <div class="impact-metric">100,000+ credits sold</div>
+                </div>
+            </div>
+
+            <div class="impact-card">
+                <div class="impact-card-header">
+                    <div class="impact-card-icon">🇺🇦</div>
+                    <div>
+                        <div class="impact-card-title">Carpathian Ecocenters</div>
+                        <div class="impact-card-region">Ukraine</div>
+                    </div>
+                </div>
+                <div class="impact-card-body">
+                    Communities spontaneously creating project pages without grants or incentives. Recording plant life, documenting rare species, bearing witness to biodiversity in landscapes that have known centuries of care.
+                    <div class="impact-metric">6-7 spontaneous projects</div>
+                </div>
+            </div>
+
+            <div class="impact-card">
+                <div class="impact-card-header">
+                    <div class="impact-card-icon">🇨🇴</div>
+                    <div>
+                        <div class="impact-card-title">Terrasos Biodiversity</div>
+                        <div class="impact-card-region">Colombia</div>
+                    </div>
+                </div>
+                <div class="impact-card-body">
+                    Voluntary Biodiversity Credits (Tebus) representing 10m squared of conservation for 30 years. Pay-for-success model verified by third parties, blending ecological science with ancestral stewardship.
+                    <div class="impact-metric">30,233 BT01 credits</div>
+                </div>
+            </div>
+
+            <div class="impact-card">
+                <div class="impact-card-header">
+                    <div class="impact-card-icon">🇪🇨</div>
+                    <div>
+                        <div class="impact-card-title">Biocultural Jaguar Credits</div>
+                        <div class="impact-card-region">Sacred Headwaters, Ecuador</div>
+                    </div>
+                </div>
+                <div class="impact-card-body">
+                    The Sharamentsa Achuar community protects jaguar habitat while asserting Indigenous sovereignty. Blockchain transparency enables conservation finance that traditional systems cannot achieve.
+                    <div class="impact-metric">10,000 hectares protected</div>
+                </div>
+            </div>
+
+            <div class="impact-card">
+                <div class="impact-card-header">
+                    <div class="impact-card-icon">🇨🇿</div>
+                    <div>
+                        <div class="impact-card-title">Eastern European Expansion</div>
+                        <div class="impact-card-region">Czech Republic & Slovakia</div>
+                    </div>
+                </div>
+                <div class="impact-card-body">
+                    Over one hundred farms committed to regenerative agriculture, seeking partnership with Regen Network. Each will interpret the Ecometric protocol according to their unique soils and local wisdom.
+                    <div class="impact-metric">111 farms scaling</div>
+                </div>
+            </div>
+
+            <div class="impact-card">
+                <div class="impact-card-header">
+                    <div class="impact-card-icon">🇧🇷</div>
+                    <div>
+                        <div class="impact-card-title">ERA Brazil</div>
+                        <div class="impact-card-region">Amazon Basin</div>
+                    </div>
+                </div>
+                <div class="impact-card-body">
+                    Using keystone species like jaguars and mountain lions to trigger trophic cascades, restoring habitats to their former abundance. ERA chose Regen Registry for its innovative ecosystem services methodologies.
+                    <div class="impact-metric">Biodiversity restoration</div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Data sourced from <a href="https://registry.regen.network">Regen Registry</a> and <a href="https://regen.network">Regen Network</a></p>
+            <p style="margin-top: 10px;">Week 4 Blog Post: Registry Assistant MCP | January 2026</p>
+            <p style="margin-top: 20px; font-style: italic; color: #4ade80;">
+                "The infrastructure exists to serve the impact. The impact is real."
+            </p>
+        </footer>
+    </div>
+</body>
+</html>

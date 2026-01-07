@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Provenance Chain Diagram - Registry Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #0f1419 0%, #1a2634 50%, #0d1117 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #e6edf3;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #58a6ff;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #8b949e;
+            margin-bottom: 3rem;
+            font-size: 1.1rem;
+        }
+
+        .chain-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 40px 20px;
+            background: rgba(22, 27, 34, 0.8);
+            border-radius: 16px;
+            border: 1px solid #30363d;
+            margin-bottom: 40px;
+        }
+
+        .chain-node {
+            flex: 1;
+            min-width: 140px;
+            max-width: 180px;
+            text-align: center;
+            position: relative;
+        }
+
+        .node-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 12px;
+            background: linear-gradient(145deg, #21262d, #161b22);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            border: 2px solid #30363d;
+            transition: all 0.3s ease;
+        }
+
+        .chain-node:hover .node-icon {
+            border-color: #58a6ff;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(88, 166, 255, 0.2);
+        }
+
+        .node-title {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 6px;
+            color: #c9d1d9;
+        }
+
+        .node-detail {
+            font-size: 0.75rem;
+            color: #8b949e;
+            line-height: 1.4;
+        }
+
+        .arrow {
+            flex: 0 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #30363d;
+            font-size: 1.5rem;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .detail-card {
+            background: rgba(22, 27, 34, 0.9);
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid #30363d;
+        }
+
+        .detail-card h3 {
+            font-size: 1.1rem;
+            color: #58a6ff;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .detail-card p {
+            color: #8b949e;
+            line-height: 1.6;
+            font-size: 0.9rem;
+        }
+
+        .detail-card code {
+            background: #161b22;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.85em;
+            color: #7ee787;
+        }
+
+        .trust-equation {
+            background: linear-gradient(145deg, #161b22, #0d1117);
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            border: 1px solid #238636;
+        }
+
+        .trust-equation h3 {
+            font-size: 1.2rem;
+            color: #7ee787;
+            margin-bottom: 16px;
+        }
+
+        .equation {
+            font-size: 1.4rem;
+            color: #c9d1d9;
+            font-family: 'JetBrains Mono', monospace;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .equation-part {
+            padding: 8px 16px;
+            background: #21262d;
+            border-radius: 8px;
+            border: 1px solid #30363d;
+        }
+
+        .equation-operator {
+            color: #58a6ff;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .chain-container {
+                flex-direction: column;
+            }
+
+            .arrow {
+                transform: rotate(90deg);
+            }
+
+            .chain-node {
+                max-width: 100%;
+            }
+        }
+
+        .stage-number {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 24px;
+            height: 24px;
+            background: #238636;
+            border-radius: 50%;
+            font-size: 0.75rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>The Provenance Chain</h1>
+        <p class="subtitle">From Document Upload to On-Chain Registration: Every Link is Verifiable</p>
+
+        <div class="chain-container">
+            <div class="chain-node">
+                <div class="node-icon">
+                    <span class="stage-number">1</span>
+                    <span>&#128196;</span>
+                </div>
+                <div class="node-title">Document</div>
+                <div class="node-detail">Project files uploaded with metadata and source tracking</div>
+            </div>
+
+            <div class="arrow">&#8594;</div>
+
+            <div class="chain-node">
+                <div class="node-icon">
+                    <span class="stage-number">2</span>
+                    <span>&#128279;</span>
+                </div>
+                <div class="node-title">IRI + Checksum</div>
+                <div class="node-detail">Unique identifier and cryptographic hash assigned</div>
+            </div>
+
+            <div class="arrow">&#8594;</div>
+
+            <div class="chain-node">
+                <div class="node-icon">
+                    <span class="stage-number">3</span>
+                    <span>&#128269;</span>
+                </div>
+                <div class="node-title">Evidence</div>
+                <div class="node-detail">Relevant passages extracted with confidence scores</div>
+            </div>
+
+            <div class="arrow">&#8594;</div>
+
+            <div class="chain-node">
+                <div class="node-icon">
+                    <span class="stage-number">4</span>
+                    <span>&#128209;</span>
+                </div>
+                <div class="node-title">Citation</div>
+                <div class="node-detail">Page numbers, sections, and source documents linked</div>
+            </div>
+
+            <div class="arrow">&#8594;</div>
+
+            <div class="chain-node">
+                <div class="node-icon">
+                    <span class="stage-number">5</span>
+                    <span>&#128221;</span>
+                </div>
+                <div class="node-title">Report</div>
+                <div class="node-detail">Structured review with audit trail and timestamps</div>
+            </div>
+
+            <div class="arrow">&#8594;</div>
+
+            <div class="chain-node">
+                <div class="node-icon">
+                    <span class="stage-number">6</span>
+                    <span>&#9939;</span>
+                </div>
+                <div class="node-title">On-Chain</div>
+                <div class="node-detail">Anchored to Regen Ledger with immutable provenance</div>
+            </div>
+        </div>
+
+        <div class="details-grid">
+            <div class="detail-card">
+                <h3><span>&#128279;</span> Resource Descriptor</h3>
+                <p>Every document receives a <code>Resource Descriptor</code> containing its IRI, source information, visibility settings, and <code>sha256</code> checksum. This metadata governs access and provides the foundation for RDF expansion and ledger anchoring.</p>
+            </div>
+
+            <div class="detail-card">
+                <h3><span>&#128269;</span> Evidence Extraction</h3>
+                <p>Citations include <code>document_id</code>, <code>page</code>, <code>section</code>, and <code>confidence</code> scores. Auditors can navigate directly to any claim and verify it independently. No summaries or paraphrases; direct quotations with coordinates.</p>
+            </div>
+
+            <div class="detail-card">
+                <h3><span>&#128221;</span> Audit Log</h3>
+                <p>Every action is recorded: <code>timestamp</code>, <code>actor</code>, <code>action_type</code>, and <code>details</code>. Human decisions are attributed and traceable. The complete review process can be reconstructed from the log.</p>
+            </div>
+
+            <div class="detail-card">
+                <h3><span>&#9939;</span> Ledger Anchoring</h3>
+                <p>Content hashes are anchored via <code>MsgAnchor</code> in Regen Ledger's <code>x/data</code> module. This creates cryptographic proof of document existence at a specific point in time. Immutable, verifiable, trustless.</p>
+            </div>
+        </div>
+
+        <div class="trust-equation">
+            <h3>The Trust Equation</h3>
+            <div class="equation">
+                <span class="equation-part">Transparency</span>
+                <span class="equation-operator">+</span>
+                <span class="equation-part">Traceability</span>
+                <span class="equation-operator">+</span>
+                <span class="equation-part">Immutability</span>
+                <span class="equation-operator">=</span>
+                <span class="equation-part" style="border-color: #238636; color: #7ee787;">Trust</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

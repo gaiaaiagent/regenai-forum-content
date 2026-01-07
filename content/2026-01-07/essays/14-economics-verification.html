@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Economics of AI-Assisted Verification - Flywheel Diagram</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #0f1419 0%, #1a2632 50%, #0d1117 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            color: #e6edf3;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            text-align: center;
+            background: linear-gradient(90deg, #58a6ff, #3fb950, #58a6ff);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { background-position: 0% center; }
+            50% { background-position: 200% center; }
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: #8b949e;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .flywheel-container {
+            position: relative;
+            width: 600px;
+            height: 600px;
+        }
+
+        .center-hub {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 180px;
+            height: 180px;
+            background: linear-gradient(135deg, #238636 0%, #2ea043 100%);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            box-shadow: 0 0 60px rgba(46, 160, 67, 0.4),
+                        inset 0 2px 4px rgba(255, 255, 255, 0.1);
+            z-index: 10;
+        }
+
+        .center-hub .metric {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .center-hub .label {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-top: 4px;
+        }
+
+        .center-hub .sublabel {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .node {
+            position: absolute;
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 15px;
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+
+        .node:hover {
+            transform: scale(1.08);
+            z-index: 20;
+        }
+
+        .node .icon {
+            font-size: 2rem;
+            margin-bottom: 6px;
+        }
+
+        .node .title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .node .value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+
+        /* Node 1: Time Saved - Top */
+        .node-1 {
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%);
+            box-shadow: 0 8px 32px rgba(56, 139, 253, 0.3);
+        }
+
+        /* Node 2: More Projects - Right */
+        .node-2 {
+            top: 50%;
+            right: 30px;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, #8957e5 0%, #a371f7 100%);
+            box-shadow: 0 8px 32px rgba(163, 113, 247, 0.3);
+        }
+
+        /* Node 3: More Credits - Bottom */
+        .node-3 {
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #db6d28 0%, #f0883e 100%);
+            box-shadow: 0 8px 32px rgba(240, 136, 62, 0.3);
+        }
+
+        /* Node 4: More Regeneration - Left */
+        .node-4 {
+            top: 50%;
+            left: 30px;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, #238636 0%, #3fb950 100%);
+            box-shadow: 0 8px 32px rgba(63, 185, 80, 0.3);
+        }
+
+        /* Curved arrows between nodes */
+        .arrow-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 420px;
+            height: 420px;
+            border: 3px solid transparent;
+            border-radius: 50%;
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .arrow-segment {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 420px;
+            height: 420px;
+        }
+
+        .arrow-segment svg {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+        }
+
+        .arrow-path {
+            fill: none;
+            stroke: url(#arrowGradient);
+            stroke-width: 3;
+            stroke-linecap: round;
+            stroke-dasharray: 15, 10;
+            animation: dash 1s linear infinite;
+        }
+
+        @keyframes dash {
+            to { stroke-dashoffset: -25; }
+        }
+
+        /* Arrow heads */
+        .arrowhead {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-style: solid;
+        }
+
+        .arrowhead-1 {
+            top: 95px;
+            right: 115px;
+            border-width: 8px 0 8px 14px;
+            border-color: transparent transparent transparent #58a6ff;
+            transform: rotate(45deg);
+        }
+
+        .arrowhead-2 {
+            bottom: 115px;
+            right: 95px;
+            border-width: 8px 0 8px 14px;
+            border-color: transparent transparent transparent #a371f7;
+            transform: rotate(135deg);
+        }
+
+        .arrowhead-3 {
+            bottom: 95px;
+            left: 115px;
+            border-width: 8px 0 8px 14px;
+            border-color: transparent transparent transparent #f0883e;
+            transform: rotate(225deg);
+        }
+
+        .arrowhead-4 {
+            top: 115px;
+            left: 95px;
+            border-width: 8px 0 8px 14px;
+            border-color: transparent transparent transparent #3fb950;
+            transform: rotate(315deg);
+        }
+
+        .metrics-bar {
+            display: flex;
+            gap: 40px;
+            margin-top: 50px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .metric-item {
+            text-align: center;
+            padding: 20px 30px;
+            background: rgba(22, 27, 34, 0.8);
+            border: 1px solid rgba(48, 54, 61, 0.8);
+            border-radius: 12px;
+        }
+
+        .metric-item .number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #58a6ff;
+        }
+
+        .metric-item .desc {
+            font-size: 0.85rem;
+            color: #8b949e;
+            margin-top: 4px;
+        }
+
+        .footer-note {
+            margin-top: 40px;
+            font-size: 0.8rem;
+            color: #6e7681;
+            text-align: center;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <h1>The Economics of AI-Assisted Verification</h1>
+    <p class="subtitle">How efficiency gains compound into regenerative impact</p>
+
+    <div class="flywheel-container">
+        <!-- SVG for curved arrows -->
+        <div class="arrow-segment">
+            <svg viewBox="0 0 420 420">
+                <defs>
+                    <linearGradient id="arrowGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#58a6ff;stop-opacity:1" />
+                        <stop offset="25%" style="stop-color:#a371f7;stop-opacity:1" />
+                        <stop offset="50%" style="stop-color:#f0883e;stop-opacity:1" />
+                        <stop offset="75%" style="stop-color:#3fb950;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#58a6ff;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                <!-- Circular path connecting nodes -->
+                <circle cx="210" cy="210" r="170" class="arrow-path" />
+            </svg>
+        </div>
+
+        <!-- Arrow heads -->
+        <div class="arrowhead arrowhead-1"></div>
+        <div class="arrowhead arrowhead-2"></div>
+        <div class="arrowhead arrowhead-3"></div>
+        <div class="arrowhead arrowhead-4"></div>
+
+        <!-- Center Hub -->
+        <div class="center-hub">
+            <div class="metric">50-70%</div>
+            <div class="label">Review Time Reduction</div>
+            <div class="sublabel">6-8 hrs to 2-3 hrs</div>
+        </div>
+
+        <!-- Node 1: Time Saved -->
+        <div class="node node-1">
+            <div class="icon">&#9201;</div>
+            <div class="title">Time Saved</div>
+            <div class="value">400-500 hrs</div>
+        </div>
+
+        <!-- Node 2: More Projects -->
+        <div class="node node-2">
+            <div class="icon">&#128196;</div>
+            <div class="title">More Projects</div>
+            <div class="value">100+ / year</div>
+        </div>
+
+        <!-- Node 3: More Credits -->
+        <div class="node node-3">
+            <div class="icon">&#127793;</div>
+            <div class="title">More Credits</div>
+            <div class="value">Issued Faster</div>
+        </div>
+
+        <!-- Node 4: More Regeneration -->
+        <div class="node node-4">
+            <div class="icon">&#127807;</div>
+            <div class="title">More Regen</div>
+            <div class="value">Funded</div>
+        </div>
+    </div>
+
+    <div class="metrics-bar">
+        <div class="metric-item">
+            <div class="number">&lt;10%</div>
+            <div class="desc">Escalation Rate</div>
+        </div>
+        <div class="metric-item">
+            <div class="number">300-400%</div>
+            <div class="desc">Industry ROI</div>
+        </div>
+        <div class="metric-item">
+            <div class="number">48 hrs</div>
+            <div class="desc">vs 60-120 days</div>
+        </div>
+    </div>
+
+    <p class="footer-note">
+        Every hour saved at the verification layer amplifies funding that flows to living systems.
+        The Registry Assistant transforms administrative overhead into regenerative impact.
+    </p>
+</body>
+</html>
