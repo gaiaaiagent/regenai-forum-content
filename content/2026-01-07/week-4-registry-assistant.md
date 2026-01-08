@@ -68,7 +68,7 @@ The Registry Review workflow moves through eight carefully designed stages, each
 
 The ultimate output is a completed checklist mapping each methodology requirement to extracted evidence, validation status, and reviewer determination—ready for registry submission.
 
-![Placeholder: Eight-Stage Workflow Diagram](../../images/week_4/stages.png)
+![Eight-Stage Workflow Diagram](../../images/week_4/stages.png)
 *Each stage produces verifiable artifacts before the system proceeds, creating accountability without rigidity.*
 
 ---
@@ -81,7 +81,7 @@ The Registry Agent Review Checklist translates these methodology requirements in
 
 The Core Carbon Principles established by the Integrity Council for the Voluntary Carbon Market now define the global benchmark: emission reductions must be real, measurable, additional, permanent, independently verified, conservatively estimated, uniquely numbered, and transparently listed [^11]. Each of these qualities requires specific methodological provisions that projects must demonstrate. The Registry Assistant automates the grammatical parsing—the mechanical work of identifying which documents address which requirements—while preserving human judgment for interpretation.
 
-![Placeholder: Checklist Matrix View](../../images/week_4/screenshots/mapping.png)
+![Checklist Matrix View](../../images/week_4/screenshots/mapping.png)
 *The requirement mapping matrix shows which documents address which checklist items, with confidence scores indicating match quality.*
 
 ---
@@ -100,14 +100,14 @@ For users outside the MCP ecosystem, a REST API wrapper exposes identical functi
 
 The collaboration model positions AI as amplification, handling mechanical tasks while preserving human accountability for decisions that matter. Document parsing, cross-referencing, and pattern matching happen at machine speed. Contextual judgment, ethical reasoning, and final accountability remain human.
 
-Every stage includes human verification checkpoints. After Document Discovery, reviewers can correct misclassifications before proceeding. After Requirement Mapping, they can add connections the system missed. After Cross-Validation, they can override flags where expert knowledge differs from automated assessment. The system presents uncertainty explicitly: a confidence score of 0.43 on a requirement signals the need for human attention.
+Every stage includes human verification checkpoints. After Document Discovery, reviewers can correct misclassifications before proceeding. After Requirement Mapping, they can add connections the system missed. After Cross-Validation, they can override flags where expert knowledge differs from automated assessment. The system presents uncertainty explicitly. Confidence scores and direct citations enable human experts to be able to quickly and efficiently review work at each stage of the workflow. 
 
-Research from human-AI collaboration suggests that process design matters more than raw capability. Garry Kasparov discovered in chess that weak human plus machine plus better process outperforms strong computer alone [^13]. The Registry Assistant embodies this principle. The eight-stage workflow, the structured handoffs, the explicit confidence scores—this is where expertise compounds.
+Research from human-AI collaboration suggests that process design matters more than raw capability. The Registry Assistant embodies this principle. The eight-stage workflow, the structured handoffs, the explicit confidence scores—this is where expertise compounds.
 
 Companies deploying AI carbon tracking systems report 300-400% annual ROI through reduced labor costs, eliminated errors, and faster credit monetization [^14]. The global carbon credit verification market is projected to grow from $226 million in 2024 to $884 million by 2030 at a CAGR of 25.5% [^15]. The traditional verification infrastructure can meet this demand when AI amplifies existing expertise.
 
-![Placeholder: Economic Impact Visualization](../../images/week_4/becca_working.png)
-*The verification flywheel: reduced review time enables increased throughput, which generates more credits, attracting more projects.*
+![Becca Working](../../images/week_4/becca_working.png)
+*The registry review agent at work.*
 
 ---
 
@@ -160,8 +160,6 @@ This is Week 4 of building planetary intelligence. The architecture is live. The
 [^11]: Integrity Council for the Voluntary Carbon Market, "Core Carbon Principles," ICVCM, 2023. [https://icvcm.org/core-carbon-principles/](https://icvcm.org/core-carbon-principles/)
 
 [^12]: Anthropic, "Introducing the Model Context Protocol," Anthropic News, November 2024. [https://www.anthropic.com/news/model-context-protocol](https://www.anthropic.com/news/model-context-protocol)
-
-[^13]: Kasparov, Garry, "The Chess Master and the Computer," The New York Review of Books, February 11, 2010. [https://www.nybooks.com/articles/2010/02/11/the-chess-master-and-the-computer/](https://www.nybooks.com/articles/2010/02/11/the-chess-master-and-the-computer/)
 
 [^14]: Autonoly, "Carbon Credit Tracking Automation: Workflow Solutions," Autonoly AI Agent Automation, 2025. [https://www.autonoly.com/use-cases/carbon-credit-tracking](https://www.autonoly.com/use-cases/carbon-credit-tracking)
 
