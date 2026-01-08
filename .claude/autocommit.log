@@ -32,3 +32,6 @@
 [2026-01-07T16:13:29.647733] SKIP - Pure request, no transition word
 [2026-01-07T16:18:12.784250] SKIP - User reports problem with generated images
 [2026-01-07T16:37:53.902944] SKIP - User statement, not approval of previous work
+[2026-01-07T17:38:36.443792] SKIP - Background command failed, not user approval
+[2026-01-08T10:30:26.762667] SKIP - Slash command
+[2026-01-08T10:38:52.620425] SKIP - Pure request for rework, no approval or transition words

@@ -98,13 +98,13 @@ For users outside the MCP ecosystem, a REST API wrapper exposes identical functi
 
 ## Human Intelligence, Machine Capability
 
-The collaboration model positions AI as amplification, handling mechanical tasks while preserving human accountability for decisions that matter. Document parsing, cross-referencing, and pattern matching happen at machine speed. Contextual judgment, ethical reasoning, and final accountability remain human.
+The collaboration model positions AI as amplification—meeting review teams where they work, reducing manual burden today. Document parsing, cross-referencing, and pattern matching happen at machine speed. Contextual judgment, ethical reasoning, and final accountability remain human.
 
-Every stage includes human verification checkpoints. After Document Discovery, reviewers can correct misclassifications before proceeding. After Requirement Mapping, they can add connections the system missed. After Cross-Validation, they can override flags where expert knowledge differs from automated assessment. The system presents uncertainty explicitly. Confidence scores and direct citations enable human experts to be able to quickly and efficiently review work at each stage of the workflow. 
+Every stage includes human verification checkpoints. After Document Discovery, reviewers can correct misclassifications before proceeding. After Requirement Mapping, they can add connections the system missed. After Cross-Validation, they can override flags where expert knowledge differs from automated assessment. The system presents uncertainty explicitly. Confidence scores and direct citations enable human experts to quickly and efficiently review work at each stage of the workflow.
 
-Research from human-AI collaboration suggests that process design matters more than raw capability. The Registry Assistant embodies this principle. The eight-stage workflow, the structured handoffs, the explicit confidence scores—this is where expertise compounds.
+Research from human-AI collaboration suggests that process design matters more than raw capability. The Registry Assistant embodies this principle. The eight-stage workflow, the structured handoffs, the explicit confidence scores—this is where expertise compounds. The market validates this approach: companies deploying AI carbon tracking systems report 300-400% annual ROI through reduced labor costs, eliminated errors, and faster credit monetization [^14]. The global carbon credit verification market is projected to grow from $226 million in 2024 to $884 million by 2030 at a CAGR of 25.5% [^15].
 
-Companies deploying AI carbon tracking systems report 300-400% annual ROI through reduced labor costs, eliminated errors, and faster credit monetization [^14]. The global carbon credit verification market is projected to grow from $226 million in 2024 to $884 million by 2030 at a CAGR of 25.5% [^15]. The traditional verification infrastructure can meet this demand when AI amplifies existing expertise.
+Every stage produces artifacts designed for a more ambitious future: cryptographic checksums that establish document provenance, structured evidence that can be independently verified, audit trails ready for on-chain registration. The Registry Assistant operates at the boundary between current practice and emerging possibility. Today, it amplifies human reviewers processing regenerative farming partnership. Tomorrow, as agentic capabilities mature and trust accumulates through transparent operation, verification workflows can evolve—each successful review building the evidentiary foundation for greater autonomy.
 
 ![Becca Working](../../images/week_4/becca_working.png)
 *The registry review agent at work.*
@@ -127,7 +127,7 @@ The 111 farms in Czech and Slovak Republics represent exactly the demand that ju
 
 The methodology ensures scientific rigor. The checklist ensures systematic verification. The Registry Assistant ensures that verification scales with the ambition of regenerative agriculture spreading across the planet.
 
-This is Week 4 of building planetary intelligence. The architecture is live. The first partnerships at scale are forming. Let's see what 111 farms of emergence looks like.
+This is Week 4 of building planetary intelligence. The architecture is live. The first partnerships at scale are forming. Let's see what scaling regenerative verification through human machine collaboration enables.
 
 ---
 
