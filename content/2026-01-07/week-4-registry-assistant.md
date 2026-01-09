@@ -2,7 +2,11 @@
 
 ![Becca at her verification workspace](../../images/week_4/botanical_becca.png)
 
-*Week 4 of Building Planetary Intelligence*
+# [Week 4/12] Regen AI Update: The Registry Assistant - January 7, 2026
+
+* **Posted by:** Shawn Anderson (Gaia AI)
+* **Key Focus:** How AI-assisted verification scales regenerative carbon markets without sacrificing rigor
+* **Last Week:** We mapped how to [connect to Regen's AI infrastructure](https://forum.regen.network/t/connecting-to-regen-ai/566)—from ChatGPT to Claude Code to autonomous agents. This week, we put that infrastructure to work.
 
 ---
 
